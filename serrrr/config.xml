@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<widget id="A6064579370390" version="0.0.1">
+  <name>众包跑腿接单端</name>
+  <description/>
+  <author email="1597084396@qq.com" href="http://www.apicloud.com">旅店老板</author>
+  <content src="index.html"/>
+  <preference name="appBackground" value="rgba(0,0,0,0)"/>
+  <preference name="windowBackground" value="rgba(0,0,0,0)"/>
+  <preference name="frameBackgroundColor" value="rgba(0,0,0,0)"/>
+  <preference name="autoLaunch" value="true"/>
+  <preference name="autoUpdate" value="true"/>
+  <preference name="smartUpdate" value="false"/>
+  <preference name="debug" value="true"/>
+  <preference name="statusBarAppearance" value="true"/>
+  <permission name="location"/>
+  <permission name="internet"/>
+  <access origin="*"/>
+  <feature name="smsVerify">
+    <param name="android_app_key" value="2448e1f65f978"/>
+    <param name="android_app_secret" value="52d1fda92f710e3fabd805ca5ec17d9c"/>
+    <param name="ios_app_key" value="2448e1f65f978"/>
+    <param name="ios_app_secret" value="52d1fda92f710e3fabd805ca5ec17d9c"/>
+  </feature>
+  <feature name="bMap">
+    <param name="android_api_key" value="Zd3tPwDcgsZbP0AGpbg5WyQaQCIKKEtA"/>
+    <param name="ios_api_key" value="sOiUEMqKLLYxxjXGm30WasK5NH5wOPLr"/>
+  </feature>
+</widget>

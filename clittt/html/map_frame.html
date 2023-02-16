@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>首页模块</title>
+		<link rel="stylesheet" type="text/css" href="../css/api.css"/>
+		<style>
+			html, body {
+				height: 100%;
+				background-color: transparent !important;
+			}
+			.icon {
+				width: 1em;
+				height: 1em;
+				margin: 0 5px;
+				vertical-align: -0.15em;
+				fill: currentColor;
+				overflow: hidden;
+			}
+			.right {
+				color: #797A7E;
+			}
+			.send {
+				color: #1986F3;
+			}
+			.deliver {
+				color: #FDAF31;
+			}
+			#content {
+				position: absolute;
+				margin: 0 5%;
+				width: 90%;
+				bottom: 30px;
+			}
+			#container1 {
+				margin-bottom: 10px;
+				display: -webkit-box;
+			}
+			#zone_btn {
+				width: 40px;
+				height: 40px;
+				line-height: 40px;
+				color: #797A7E;
+				background: #FFFFFF;
+				text-align: center;
+				border: 1px solid #D9D9D9;
+				border-radius: 50%;
+				box-shadow: 2px 2px 5px #D9D9D9;
+			}
+			#choicebox {
+				position: relative;
+				width: 140px;
+				height: 40px;
+				line-height: 40px;
+				margin-left: 10px;
+				background: #FFFFFF;
+				border: 1px solid #D9D9D9;
+				border-radius: 20px;
+				box-shadow: 2px 2px 5px #D9D9D9;
+				display: -webkit-box;
+			}
+			.choice {
+				width: 50%;
+				color: #B9C0CA;
+				text-align: center;
+			}
+			.active {
+				color: #1986F3;
+			}
+			#container2 {
+				height: 141px;
+				padding: 0 10px;
+				background: #FFFFFF;
+				border: 1px solid #D9D9D9;
+				border-radius: 10px;
+				color: #B9C0CA;
+				box-shadow: 2px 2px 5px #D9D9D9;
+			}
+			.msg_wrap {
+				position: relative;
+				height: 50px;
+				line-height: 50px;
+				padding: 10px 0;
+				display: -webkit-box;
+			}
+			.msg_wrap p {
+				-webkit-box-flex: 1;
+			}
+			.line {
+				width: 90%;
+				height: 1px;
+				margin: 0 auto;
+				background: #D9D9D9;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="content">
+			<div id="container1">
+				<div id="zone_btn">
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#icon-my"></use>
+					</svg>
+				</div>
+				<div id="choicebox">
+					<div id="send" class="choice active">
+						送件
+					</div>
+					<div id="deliver" class="choice">
+						取件
+					</div>
+				</div>
+			</div>
+			<div id="container2">
+				<div id="send_wrap" class="msg_wrap" onclick="api.openWin({name:'package_send',url:'package_send.html'});">
+					<svg class="icon send" aria-hidden="true">
+						<use xlink:href="#icon-send"></use>
+					</svg>
+					<p id="consigner_address">
+						物品从哪里寄出
+					</p>
+					<svg class="icon right" aria-hidden="true">
+						<use xlink:href="#icon-right"></use>
+					</svg>
+				</div>
+				<div class="line"></div>
+				<div id="deliver_wrap" class="msg_wrap" onclick="api.openWin({name:'package_send',url:'package_send.html'});">
+					<svg class="icon deliver" aria-hidden="true">
+						<use xlink:href="#icon-deliver"></use>
+					</svg>
+					<p id="consignee_address">
+						物品寄到哪里去
+					</p>
+					<svg class="icon right" aria-hidden="true">
+						<use xlink:href="#icon-right"></use>
+					</svg>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../script/api.js"></script>
+	<script type="text/javascript" src="../script/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="../script/iconfont.js"></script>
+	<script type="text/javascript">
+		var consignee_address = $api.getStorage('consignee_address');
+		var consigner_address = $api.getStorage('consigner_address');
+		apiready = function() {
+			info();
+		};
+		function info() {
+			if (consignee_address != "undifined" && consigner_address != "undifined") {
+				$("#consignee_address").html(consignee_address);
+				$("#consigner_address").html(consigner_address);
+			}
+		}
+		$("#deliver").click(function() {
+			$("#send").removeClass("active");
+			$(this).addClass("active");
+			$("#send_wrap").animate({
+				top : '70px'
+			}).attr("onclick", "api.openWin({name:'package_deliver',url:'package_deliver.html'});");
+			$("#deliver_wrap").animate({
+				bottom : '70px'
+			}).attr("onclick", "api.openWin({name:'package_deliver',url:'package_deliver.html'});");
+		});
+		$("#send").click(function() {
+			$("#deliver").removeClass("active");
+			$(this).addClass("active");
+			$("#send_wrap").animate({
+				top : '0'
+			}).attr("onclick", "api.openWin({name:'package_send',url:'package_send.html'});");
+			$("#deliver_wrap").animate({
+				bottom : '0'
+			}).attr("onclick", "api.openWin({name:'package_send',url:'package_send.html'});");
+		});
+		$("#zone_btn").click(function() {
+			api.openWin({
+				name : 'zone',
+				url : 'zone.html',
+				animation : {
+					type : "push",
+					subType : "from_bottom"
+				}
+			});
+		});
+	</script>
+</html>

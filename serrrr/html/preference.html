@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>接单偏好</title>
+		<link rel="stylesheet" type="text/css" href="../css/api.css"/>
+		<style>
+		header {
+			width: 100%;
+			height: 50px;
+			color: #FFFFFF;
+			background-color: #006ce4;
+			font-size: 18px;
+		}
+		header a {
+			width: 16%;
+			height: 50px;
+			line-height: 50px;
+			display: block;
+			text-align: center;
+			float: right;
+		}
+		header a:active {
+			opacity: 0.5;
+		}
+		.back, .title {
+			float: left;
+		}
+		.title {
+			width: 68%;
+			height: 50px;
+			line-height: 50px;
+			margin-right: 16%;
+			text-align: center;
+		}
+		.icon {
+			width: 1em;
+			height: 1em;
+			vertical-align: -0.75em;
+			fill: #FFFFFF;
+			overflow: hidden;
+			padding: 10px;
+			margin-top: 10px;
+			border-radius: 5px;
+		}
+		.row {
+			display: flex;
+			text-align: center;
+		}
+		input[type="radio"] {
+			display: none;
+		}
+		label {
+			height: 40px;
+			line-height: 40px;
+			margin: 10px;
+			background-color: #D9D9D9;
+			border-radius: 5px;
+			flex: 1;
+		}
+		input[type="radio"]:checked + label {
+			color: #FFFFFF;
+			background-color: #006CE4;
+		}
+		#confirm {
+			margin-top: 40px;
+			width: 80%;
+			height: 50px;
+			margin-left: 10%;
+			border-radius: 25px;
+			background-color: #006CE4;
+			color: #FFFFFF;
+			font-size: 14px;
+			outline: none;
+		}
+		button {
+			outline: none;
+		}
+		.content{
+				padding: 20px 5%;
+				line-height: 30px;
+				text-indent:2em;
+		}
+		</style>
+	</head>
+	<body>
+		<header>
+			<a class="back" onclick="api.closeWin();">
+			<svg class="icon" aria-hidden="true">
+				<use xlink:href="#icon-back"></use>
+			</svg> </a>
+			<p class="title">
+				接单偏好
+			</p>
+		</header>
+		<div class="content">
+				你希望接单列表里的订单顺序以何种方式优先：
+		</div>
+		<div class="row">
+			<input type="radio" id="a1" name="prefer" checked value="距离优先">
+			<label for="a1">距离优先</label>
+			<input type="radio" id="a2" name="prefer" value="习惯优先">
+			<label for="a2">习惯优先</label>
+		</div>
+	</body>
+	<script type="text/javascript" src="../script/api.js"></script>
+	<script type="text/javascript" src="../script/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="../script/iconfont.js"></script>
+	<script>
+		var prefer = $api.getStorage('prefer');
+		apiready = function() {
+			var header = document.getElementsByTagName("header");
+			$api.fixStatusBar(header[0]);
+			info();
+		}
+		function info() {
+			if (prefer != "undifined") {
+				$("input[name='prefer'][value='"+prefer+"']").attr("checked",true);
+			}
+		}
+    $("label").click(function(){
+				$api.setStorage('prefer', $(this).text());
+		});
+	</script>
+</html>

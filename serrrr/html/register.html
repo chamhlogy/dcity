@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>注册</title>
+	<link rel="stylesheet" type="text/css" href="../css/api.css" />
+	<style>
+		header {
+			width: 100%;
+			height: 50px;
+			color: #FFFFFF;
+			background-color: #006ce4;
+			font-size: 18px;
+		}
+
+		header a {
+			width: 16%;
+			height: 50px;
+			line-height: 50px;
+			display: block;
+			text-align: center;
+			float: right;
+		}
+
+		header a:active {
+			opacity: 0.5;
+		}
+
+		.back,
+		.title {
+			float: left;
+		}
+
+		.title {
+			width: 68%;
+			height: 50px;
+			line-height: 50px;
+			margin-right: 16%;
+			text-align: center;
+		}
+
+		.input-wrap {
+			padding: 10px 0;
+			display: -webkit-box;
+			border-bottom: 1px solid #D9D9D9;
+		}
+
+		.form {
+			margin: 30px 20px 0 20px;
+			padding: 0 10px;
+			line-height: 30px;
+		}
+
+		.input-wrap input {
+			height: 32px;
+			margin-left: 10px;
+			font-size: 18px;
+			color: #006ce4;
+			-webkit-box-flex: 1;
+			display: block;
+			outline: none;
+		}
+
+		#next {
+			margin-top: 40px;
+			width: 80%;
+			height: 50px;
+			margin-left: 10%;
+			border-radius: 25px;
+			background-color: #D9D9D9;
+			color: #FFFFFF;
+			font-size: 14px;
+			outline: none;
+		}
+
+		.icon {
+			width: 1em;
+			height: 1em;
+			vertical-align: -0.15em;
+			fill: currentColor;
+			overflow: hidden;
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+		<a class="back" onclick="api.closeWin();">
+			<svg class="icon" aria-hidden="true">
+				<use xlink:href="#icon-back"></use>
+			</svg> </a>
+		<p class="title">
+			注册
+		</p>
+	</header>
+	<div class="form" oninput="on_input(event)">
+		<div class="input-wrap">
+			<svg class="icon" aria-hidden="true">
+					<use xlink:href="#icon-profile"></use>
+				</svg>
+			<input type="text" placeholder="设置用户名" id="username" maxlength="20" autofocus>
+		</div>
+		<div class="input-wrap">
+			<svg class="icon" aria-hidden="true">
+					<use xlink:href="#icon-unlock"></use>
+				</svg>
+			<input type="password" placeholder="设置密码" id="password" maxlength="20" oninput="this.value=value.replace(/[^\w\/]/ig,'')">
+		</div>
+		<div class="input-wrap">
+			<svg class="icon" aria-hidden="true">
+					<use xlink:href="#icon-lock"></use>
+				</svg>
+			<input type="password" placeholder="重复密码" id="repassword" maxlength="20" oninput="this.value=value.replace(/[^\w\/]/ig,'')">
+		</div>
+		<div class="input-wrap">
+			<svg class="icon" aria-hidden="true">
+					<use xlink:href="#icon-vipcard"></use>
+				</svg>
+			<input type="password" placeholder="设置6位支付密码" id="paypwd" maxlength="6" oninput="this.value=value.replace(/[^\w\/]/ig,'')">
+		</div>
+		<div class="input-wrap">
+			<svg class="icon" aria-hidden="true">
+					<use xlink:href="#icon-phone"></use>
+				</svg>
+			<input type="phone" placeholder="绑定11位手机号" id="phone" maxlength="11" oninput="this.value=this.value.replace(/[^\d]/g,'')">
+		</div>
+	</div>
+	<button id="next" onclick="next();" disabled>
+			下一步
+		</button>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="../script/iconfont.js"></script>
+<script type="text/javascript">
+	apiready = function() {
+		var header = document.getElementsByTagName("header");
+		$api.fixStatusBar(header[0]);
+	};
+
+	function next() {
+		if ($api.byId("password").value == $api.byId("repassword").value) {
+			api.ajax({
+				url: 'http://111.231.88.55/app/register1.php',
+				method: 'post',
+				dataType: 'text',
+				data: {
+					values: {
+						username: $api.byId('username').value,
+						password: $api.byId('password').value,
+						paypwd: $api.byId('paypwd').value
+					}
+				}
+			}, function(ret, err) {
+				//  api.alert({
+				//      msg: eval(JSON.stringify(ret))
+				//  });
+				if (eval(JSON.stringify(ret)) == 1) {
+					$api.setStorage('username', $api.byId('username').value);
+					api.showProgress({
+						title: '短信发送中',
+						text: '请稍后...'
+					});
+					var smsVerify = api.require('smsVerify');
+					smsVerify.register(function(ret, err) {
+						if (ret.status) {
+							smsVerify.sms({
+								phone: $api.byId("phone").value,
+								country: "86"
+							}, function(ret, err) {
+								api.hideProgress();
+								if (ret.status) {
+									api.toast({
+										msg: '短信发送成功'
+									});
+									api.openWin({
+										name: 'validate',
+										url: 'validate.html',
+										pageParam: {
+											username :$api.byId("phone").value,
+											phone: $api.byId("phone").value
+										}
+									});
+								} else {
+									api.toast({
+										msg: err.code + ' ' + err.msg
+									});
+								}
+							});
+						}
+					});
+				} else if (eval(JSON.stringify(ret)) == 0) {
+					api.toast({
+						msg: '服务器错误!',
+						duration: 1000
+					});
+				} else if (eval(JSON.stringify(ret)) == 2) {
+					api.toast({
+						msg: '此账号已被注册!',
+						duration: 2500
+					});
+				} else {
+					api.toast({
+						msg: ret
+					});
+				}
+			});
+		} else if ($api.byId("password").value != $api.byId("repassword").value) {
+			api.toast({
+				msg: '两次输入密码不一致'
+			});
+		} else {
+			api.toast({
+				msg: '未知错误'
+			});
+		}
+	}
+
+	//按钮开关及颜色更改
+	function on_input(event) {
+		if ($api.byId("username").value != '' && $api.byId("repassword").value != '' && $api.byId("password").value != '' && $api.byId("paypwd").value.length == 6 && $api.byId("phone").value.length == 11) {
+			$api.byId("next").style.backgroundColor = "#006ce4";
+			$api.byId("next").disabled = false;
+		} else {
+			$api.byId("next").style.backgroundColor = "#D9D9D9";
+			$api.byId("next").disabled = true;
+		}
+	}
+</script>
+</html>

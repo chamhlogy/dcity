@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>个人信息</title>
+		<link rel="stylesheet" type="text/css" href="../css/api.css" />
+		<link rel="stylesheet" type="text/css" href="../css/font-awesome.min.css" />
+		<style>
+			html {
+				background-color: #f8f8f8;
+			}
+			header {
+				width: 100%;
+				height: 50px;
+				color: #FFFFFF;
+				background-color: #006CE4;
+				font-size: 18px;
+				z-index: 99;
+			}
+			.back {
+				width: 16%;
+				height: 50px;
+				line-height: 50px;
+				display: block;
+				text-align: center;
+				float: left;
+			}
+			.back:active {
+				opacity: 0.5;
+			}
+			.title {
+				width: 68%;
+				height: 50px;
+				line-height: 50px;
+				margin-right: 16%;
+				text-align: center;
+				float: left;
+			}
+			.headimg {
+				width: 100%;
+				height: 200px;
+				background-color: #f8f8f8;
+			}
+			.imgdiv {
+				position: relative;
+				width: 120px;
+				height: 120px;
+				margin: 0 auto;
+				top: 40px;
+				background-image: url("../image/b.png");
+				background-position: center;
+				background-size: cover;
+				border-radius: 50%;
+			}
+			.idiv {
+				position: absolute;
+				width: 50px;
+				height: 50px;
+				bottom: -15px;
+				right: -15px;
+				opacity: 0.8;
+				background-color: #99b3ff;
+				border-radius: 50%;
+				text-align: center;
+			}
+			.idiv i {
+				color: #FFFFFF;
+				line-height: 50px;
+			}
+			.mainul {
+				width: 100%;
+				line-height: 50px;
+				list-style: none;
+			}
+			.mainul li {
+				padding: 0 5%;
+				border-bottom: 1px solid #D9D9D9;
+			}
+			.mainul li:active {
+				background-color: #f8f8f8;
+			}
+			span {
+				position: relative;
+				float: right;
+				color: #D9D9D9;
+			}
+			.sexdiv {
+				position: fixed;
+				width: 60%;
+				height: 150px;
+				top: 30%;
+				left: 20%;
+				background-color: #FFFFFF;
+				border-radius: 10px;
+				display: none;
+				overflow: hidden;
+				z-index: 9999;
+			}
+			.sexdiv1 {
+				width: 80%;
+				height: 50px;
+				padding: 0 10%;
+				line-height: 50px;
+			}
+			.sexdiv li {
+				width: 100%;
+				height: 50px;
+				padding: 0 10%;
+				line-height: 50px;
+				border-top: 1px solid #D9D9D9;
+				box-sizing: border-box;
+			}
+			.sexdiv li:active, .picdiv li:active {
+				background-color: #f8f8f8;
+			}
+			.picdiv {
+				position: fixed;
+				width: 60%;
+				height: 100px;
+				top: 30%;
+				left: 20%;
+				background-color: #FFFFFF;
+				border-radius: 10px;
+				display: none;
+				overflow: hidden;
+				z-index: 9999;
+			}
+			.picdiv li {
+				width: 100%;
+				height: 50px;
+				padding: 0 10%;
+				line-height: 50px;
+				border-top: 1px solid #D9D9D9;
+				box-sizing: border-box;
+			}
+			input[type="radio"] {
+				display: none;
+			}
+			input[type="radio"]:checked+ label:before {
+				border-color: #006CE4;
+			}
+			input[type="radio"]:checked+ label:after {
+				background: #006CE4;
+			}
+			label {
+				width: 80%;
+				position: absolute;
+			}
+			label:before {
+				content: '';
+				position: absolute;
+				right: 0;
+				top: 15px;
+				width: 25px;
+				height: 25px;
+				border-radius: 50%;
+				border: 1px solid #006CE4;
+			}
+			label:after {
+				content: '';
+				position: absolute;
+				right: 7px;
+				top: 22px;
+				width: 13px;
+				height: 13px;
+				border-radius: 50%
+			}
+			.mask {
+				position: fixed;
+				width: 100%;
+				height: 100%;
+				top: 0;
+				background-color: #000000;
+				opacity: 0.7;
+				display: none;
+				z-index: 999;
+			}
+			.icon {
+				width: 1em;
+				height: 1em;
+				vertical-align: -0.15em;
+				fill: currentColor;
+				overflow: hidden;
+			}
+			.camera {
+				font-size: 2em;
+				vertical-align: -0.75em;
+				fill: #FFFFFF;
+			}
+			.star:nth-child(n+3) {
+				fill: gold;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<a class="back" onclick="api.closeWin()">
+			<svg class="icon" aria-hidden="true">
+				<use xlink:href="#icon-back"></use>
+			</svg></a>
+			<p class="title">
+				个人信息
+			</p>
+		</header>
+		<div class="headimg">
+			<div class="imgdiv">
+				<div class="idiv">
+					<svg class="icon camera" aria-hidden="true">
+						<use xlink:href="#icon-camera"></use>
+					</svg>
+				</div>
+			</div>
+		</div>
+		<ul class="mainul">
+			<li>
+				用户名： <span id="edituser">未登录</span>
+			</li>
+			<li class="sex">
+				性别： <span id="sex">
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#icon-right"></use>
+					</svg></span>
+			</li>
+			<li onclick="api.openWin({name:'phone',url:'phone.html'});">
+				密保手机：<span id="mphone">
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#icon-right"></use>
+					</svg></span>
+			</li>
+			<li onclick="api.openWin({name:'password',url:'password.html'});">
+				修改密码：<span>
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#icon-right"></use>
+					</svg></span>
+			</li>
+			<li onclick="api.openWin({name:'reputation',url:'reputation.html'});">
+				信誉等级：<span>
+					<svg class="icon star" aria-hidden="true">
+						<use xlink:href="#icon-favorfill"></use>
+					</svg>
+					<svg class="icon star" aria-hidden="true">
+						<use xlink:href="#icon-favorfill"></use>
+					</svg>
+					<svg class="icon star" aria-hidden="true">
+						<use xlink:href="#icon-favorfill"></use>
+					</svg>
+					<svg class="icon star" aria-hidden="true">
+						<use xlink:href="#icon-favorfill"></use>
+					</svg>
+					<svg class="icon star" aria-hidden="true">
+						<use xlink:href="#icon-favorfill"></use>
+					</svg></span>
+			</li>
+		</ul>
+		<div class="sexdiv">
+			<div class="sexdiv1">
+				选择性别
+			</div>
+			<ul class="sexdiv2">
+				<li class="sexli">
+					<input type="radio" id="man" name="sex" checked>
+					<label for="man">男</label>
+				</li>
+				<li class="sexli">
+					<input type="radio" id="woman" name="sex">
+					<label for="woman">女</label>
+				</li>
+			</ul>
+		</div>
+		<ul class="picdiv">
+			<li onclick="openCamera()">
+				手机拍摄
+			</li>
+			<li onclick="openAlbum()">
+				相册选择
+			</li>
+		</ul>
+		<div class="mask"></div>
+	</body>
+	<script type="text/javascript" src="../script/api.js"></script>
+	<script type="text/javascript" src="../script/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="../script/iconfont.js"></script>
+	<script>
+		apiready = function() {
+			var header = document.getElementsByTagName("header");
+			$api.fixStatusBar(header[0]);
+			$("#edituser").text($api.getStorage('username'));
+			if ($api.getStorage('sex') != 'undefined') {
+				$("#sex").text($api.getStorage('sex'));
+			}
+			if ($api.getStorage('mphone') != 'undefined') {
+				var str = $api.getStorage('mphone');
+				$("#mphone").text(str.substring(0, 3) + "****" + str.substring(8, 11));
+			}
+		};
+		$(".mask").click(function() {
+			$(".mask,.sexdiv").hide();
+		});
+		//打开摄像头
+		function openCamera() {
+			api.getPicture({
+				sourceType : 'camera',
+				encodingType : 'jpg',
+				mediaValue : 'pic',
+				destinationType : 'base64',
+				allowEdit : true,
+				quality : 100,
+				targetWidth : 300,
+				targetHeight : 300,
+				saveToPhotoAlbum : true
+			}, function(ret, err) {
+				if (ret) {
+					api.ajax({
+						url : 'http://',
+						method : 'post',
+						data : {
+							values : {
+								username : $api.getStorage('username')
+							},
+							files : {
+								file : ret.data
+							}
+						}
+					}, function(ret, err) {
+						if (ret) {
+							api.toast({
+								msg : "上传成功"
+							});
+						} else {
+							api.toast({
+								msg : "上传失败"
+							});
+						}
+					});
+				} else {
+					api.toast({
+						msg : "获取摄像头失败"
+					});
+				}
+			});
+		}
+
+		//打开相册
+		function openAlbum() {
+			api.getPicture({
+				sourceType : 'album',
+				encodingType : 'jpg',
+				mediaValue : 'pic',
+				destinationType : 'base64',
+				allowEdit : true,
+				quality : 100,
+				targetWidth : 300,
+				targetHeight : 300,
+				saveToPhotoAlbum : true
+			}, function(ret, err) {
+				if (ret) {
+					api.ajax({
+						url : 'http://',
+						method : 'post',
+						data : {
+							values : {
+								username : $api.getStorage('username')
+							},
+							files : {
+								file : ret.data
+							}
+						}
+					}, function(ret, err) {
+						if (ret) {
+							api.toast({
+								msg : "上传成功"
+							});
+						} else {
+							api.toast({
+								msg : "上传失败"
+							});
+						}
+					});
+				} else {
+					api.toast({
+						msg : "获取相册失败"
+					});
+				}
+			});
+		}
+
+
+		$(".sex").click(function() {
+			$(".sexdiv").slideDown("fast");
+			$(".mask").show();
+		});
+		$(".sexli").click(function() {
+			$(".sexdiv,.mask,.picdiv").hide();
+			// api.ajax({
+			// 	url : 'http://111.231.88.55/app/update.php',
+			// 	method : 'post',
+			// 	dataType : 'text',
+			// 	data : {
+			// 		values : {
+			// 			Name : $api.getStorage('username'),
+			// 			Sex : $(this).find("label").text()
+			// 		}
+			// 	}
+			// }, function(ret, err) {
+			// 	if (ret) {
+					$(".sex span").text($(this).find("label").text());
+					$api.setStorage('sex', $(this).find("label").text());
+			// 	} else {
+			// 		api.alert({
+			// 			msg : "修改性别失败"
+			// 		});
+			// 	}
+			// });
+		});
+		$(".imgdiv").click(function() {
+			$(".picdiv").slideDown("fast");
+			$(".mask").show();
+		});
+		$(".picdiv li").click(function() {
+			$(".picdiv,.mask").hide();
+		});
+		function newname() {
+			$("#edituser").text($api.getStorage('username'));
+			api.execScript({
+				name : 'nav',
+				script : 'window.location.reload();'
+			});
+		}
+	</script>
+</html>

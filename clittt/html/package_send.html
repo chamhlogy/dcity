@@ -1,0 +1,664 @@
+ <!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>送货信息</title>
+	<link rel="stylesheet" type="text/css" href="../css/api.css" />
+	<style>
+		html {
+			background: #f8f8f8;
+		}
+
+		header {
+			position: fixed;
+			width: 100%;
+			height: 50px;
+			color: #FFFFFF;
+			background-color: #006ce4;
+			font-size: 18px;
+		}
+
+		header a {
+			width: 16%;
+			height: 50px;
+			line-height: 50px;
+			display: block;
+			text-align: center;
+			float: right;
+		}
+
+		header a:active {
+			opacity: 0.5;
+		}
+
+		.back,
+		.title {
+			float: left;
+		}
+
+		.title {
+			width: 68%;
+			height: 50px;
+			line-height: 50px;
+			margin-right: 16%;
+			text-align: center;
+		}
+
+		.icon {
+			width: 1em;
+			height: 1em;
+			vertical-align: -0.15em;
+			fill: currentColor;
+			overflow: hidden;
+		}
+
+		.right {
+			color: #797A7E;
+		}
+
+		.send,
+		.code {
+			color: #1986F3;
+		}
+
+		.deliver {
+			color: #FDAF31;
+		}
+
+		#content {
+			width: 90%;
+			height: calc(100% - 125px);
+			position: fixed;
+			margin: 75px 5% 0 5%;
+			overflow-y: scroll;
+		}
+
+		.container {
+			margin-top: 20px;
+			padding: 0 10px;
+			border-radius: 10px;
+			background: #FFFFFF;
+		}
+
+		.msg_wrap {
+			position: relative;
+			height: 50px;
+			line-height: 50px;
+			padding: 10px 0;
+			display: -webkit-box;
+		}
+
+		.msg_wrap p {
+			-webkit-box-flex: 1;
+		}
+
+		.msg_wrap .icon {
+			margin: 0 5px;
+		}
+
+		.line {
+			width: 90%;
+			height: 1px;
+			margin: 0 auto;
+			background: #D9D9D9;
+		}
+
+		#goods {
+			line-height: 100px;
+			float: left;
+		}
+
+		.type {
+			color: #1986F3;
+			font-size: 2em;
+		}
+
+		#choice {
+			height: 100px;
+			text-align: center;
+			display: flex;
+		}
+
+		.option {
+			flex: 1;
+		}
+
+		.option_icon {
+			width: 50px;
+			height: 50px;
+			line-height: 50px;
+			margin: 15px auto 0;
+		}
+
+		ul {
+			line-height: 50px;
+		}
+
+		li {
+			padding: 0 5px;
+			border-bottom: 1px solid #D9D9D9;
+		}
+
+		li:last-child {
+			border-bottom: none;
+		}
+
+		select {
+			height: 50px;
+			padding: 0 20px;
+			background: transparent;
+			border: 0;
+			float: right;
+			direction: rtl;
+			-webkit-appearance: none;
+		}
+
+		input {
+			line-height: 48px;
+			color: #006ce4;
+			text-align: right;
+			-webkit-box-flex: 1;
+			outline: none;
+			float: right;
+		}
+
+		button {
+			outline: none;
+		}
+
+		.default {
+			color: #B9C0CA;
+			float: right;
+			clear: both;
+		}
+
+		#bottom {
+			position: fixed;
+			width: 100%;
+			height: 50px;
+			line-height: 50px;
+			bottom: 0;
+			padding-left: 20px;
+			background: #FFFFFF;
+			border-top: 1px solid #D9D9D9;
+			box-sizing: border-box;
+		}
+
+		#sum {
+			padding: 0 2px;
+			font-size: 20px;
+			font-weight: 700;
+		}
+
+		#confirm {
+			width: 30%;
+			height: 50px;
+			color: #FFFFFF;
+			background: #006CE4;
+			float: right;
+			outline: none;
+		}
+
+		#tab {
+			position: fixed;
+			width: 100%;
+			height: 180px;
+			background: #f8f8f8;
+			bottom: 0;
+			display: none;
+		}
+
+		.close {
+			position: absolute;
+			width: 30px;
+			height: 30px;
+			right: 10px;
+			top: 10px;
+		}
+
+		.word {
+			margin-left: 20px;
+			margin-top: 20px;
+		}
+
+		#tel {
+			margin-top: 30px;
+			padding: 0 3%;
+			text-align: center;
+			display: flex;
+		}
+
+		input[type="tel"] {
+			width: 40px;
+			height: 40px;
+			margin-left: 10px;
+			font-size: 28px;
+			line-height: 40px;
+			color: #006ce4;
+			text-align: center;
+			border: 1px solid #000000;
+			outline-color: #66aeff;
+		}
+
+		.container_fee {
+			float: right;
+		}
+
+		.type1 {
+			background: #D9D9D9;
+			padding: 10px;
+			margin-top: 10px;
+			border-radius: 5px;
+			fill: #FFFFFF;
+			vertical-align: -0.75em;
+		}
+
+		.type2 {
+			background: #006CE4;
+			padding: 10px;
+			margin-top: 10px;
+			border-radius: 5px;
+			fill: #FFFFFF;
+			vertical-align: -0.75em;
+		}
+
+		.fee {
+			line-height: 36px;
+			margin: 0 5px;
+			display: inline;
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+		<a class="back" onclick="api.closeWin();">
+			<svg class="icon" aria-hidden="true">
+				<use xlink:href="#icon-back"></use>
+			</svg> </a>
+		<p class="title">
+			送货信息
+		</p>
+	</header>
+	<div id="content">
+		<div class="container">
+			<div class="msg_wrap" onclick="api.openWin({name:'send',url:'send.html'});">
+				<svg class="icon send" aria-hidden="true">
+						<use xlink:href="#icon-send"></use>
+					</svg>
+				<p id="consigner_address">
+					物品寄到哪里去
+				</p>
+				<svg class="icon right" aria-hidden="true">
+						<use xlink:href="#icon-right"></use>
+					</svg>
+			</div>
+			<div class="line"></div>
+			<div class="msg_wrap" onclick="api.openWin({name:'deliver',url:'deliver.html'});">
+				<svg class="icon deliver" aria-hidden="true">
+						<use xlink:href="#icon-deliver"></use>
+					</svg>
+				<p id="consignee_address">
+					物品从哪里寄出
+				</p>
+				<svg class="icon right" aria-hidden="true">
+						<use xlink:href="#icon-right"></use>
+					</svg>
+			</div>
+		</div>
+		<div class="container" id="container_type" onclick="api.openWin({name:'goods',url:'goods.html'});">
+			<span id="goods">货品:</span>
+			<div id="choice">
+				<div class="option">
+					<div class="option_icon">
+						<svg class="icon type" aria-hidden="true">
+								<use xlink:href="#icon-cascades"></use>
+							</svg>
+					</div>
+					<p id="type">
+						其它
+					</p>
+				</div>
+				<div class="option">
+					<div class="option_icon">
+						<svg class="icon type" aria-hidden="true">
+								<use xlink:href="#icon-big"></use>
+							</svg>
+					</div>
+					<p class="weight">
+						<span id="weight">1</span>KG
+					</p>
+				</div>
+				<div class="option">
+					<div class="option_icon">
+						<svg class="icon type" aria-hidden="true">
+								<use xlink:href="#icon-moneybag"></use>
+							</svg>
+					</div>
+					<p id="value">
+						100元以下
+					</p>
+				</div>
+			</div>
+		</div>
+		<div class="container" id="receipt">
+			<ul>
+				<li>
+					收货时间：
+					<select>
+							<option>全天</option>
+							<option>上午</option>
+							<option>中午</option>
+							<option>下午</option>
+							<option>晚上</option>
+							<option>夜间</option>
+						</select>
+				</li>
+				<li>
+					取货码：
+					<svg class="icon code" aria-hidden="true" onclick="api.openWin({name:'explain_code',url:'explain_code.html'});">
+							<use xlink:href="#icon-question"></use>
+						</svg>
+					<span class="default">默认开启</span>
+				</li>
+				<li>
+					备注：
+					<input type="text" placeholder="请输入备注信息（选填）">
+				</li>
+			</ul>
+		</div>
+		<div class="container">
+			<ul>
+				<li>
+					赏金：
+					<svg class="icon code" aria-hidden="true" onclick="api.openWin({name:'explain_fee',url:'explain_fee.html'});">
+							<use xlink:href="#icon-question"></use>
+						</svg>
+					<div class="container_fee">
+						<button id="minus" onclick="minus();" disabled>
+								<svg class="icon type1" aria-hidden="true">
+									<use xlink:href="#icon-move"></use>
+								</svg>
+							</button>
+						<p class="fee">
+							<span id="fee">0</span>元
+						</p>
+						<button onclick="plus();">
+								<svg class="icon type2" aria-hidden="true">
+									<use xlink:href="#icon-add"></use>
+								</svg>
+							</button>
+				</li>
+				<li>
+					优惠券：<span id="discount" class="default">暂不支持</span>
+				</li>
+			</ul>
+			</div>
+		</div>
+		<div id="bottom">
+			共<span id="sum">?</span>元 <a onclick="api.openWin({name:'explain_freight',url:'explain_freight.html'});">运费明细</a>
+			<svg class="icon" aria-hidden="true">
+				<use xlink:href="#icon-right"></use>
+			</svg>
+			<button id="confirm" onclick="confirm();">
+				发布订单
+			</button>
+		</div>
+		<div id="tab">
+			<div class="close" onclick="api.closeWin()">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#icon-close"></use>
+				</svg>
+			</div>
+			<p class="word">
+				请输入支付密码：
+			</p>
+			<div id="tel">
+				<input type="tel" maxlength="1" autofocus oninput="this.value=this.value.replace(/[^\d]/g,'')">
+				<input type="tel" maxlength="1" oninput="this.value=this.value.replace(/[^\d]/g,'')">
+				<input type="tel" maxlength="1" oninput="this.value=this.value.replace(/[^\d]/g,'')">
+				<input type="tel" maxlength="1" oninput="this.value=this.value.replace(/[^\d]/g,'')">
+				<input type="tel" maxlength="1" oninput="this.value=this.value.replace(/[^\d]/g,'')">
+				<input type="tel" maxlength="1" id="lastpwd" oninput="this.value=this.value.replace(/[^\d]/g,'')">
+			</div>
+		</div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="../script/iconfont.js"></script>
+<script type="text/javascript">
+	var type = $api.getStorage('type');
+	var weight = $api.getStorage('weight');
+	var value = $api.getStorage('value');
+	var fee = $api.getStorage('fee');
+	var consignee_address = $api.getStorage('consignee_address');
+	var consigner_address = $api.getStorage('consigner_address');
+	apiready = function() {
+		var header = document.getElementsByTagName("header");
+		$api.fixStatusBar(header[0]);
+		goods();
+		info();
+		feee();
+	};
+
+	function goods() {
+		if (type != "undifined" && weight != "undifined" && value != "undifined") {
+			$("#type").html(type);
+			$("#weight").html(weight);
+			$("#value").html(value);
+			sum();
+		}
+	}
+
+	function info() {
+		if (consignee_address != "undifined" && consigner_address != "undifined") {
+			$("#consignee_address").html(consignee_address);
+			$("#consigner_address").html(consigner_address);
+			sum();
+		}
+	}
+
+	function feee() {
+		if (fee != "undifined") {
+			$("#fee").text($api.getStorage('fee'));
+			if ($api.getStorage('fee') > 0) {
+				$(".type1").css("background", "#006CE4");
+				$("#minus").removeAttr("disabled");
+			}
+			sum();
+		}
+	}
+
+	function sum() {
+		if (consignee_address != "undifined" && consigner_address != "undifined") {
+			var w = parseInt($("#weight").html());
+			var f = parseInt($("#fee").text());
+			if (w <= 5) {
+				$("#sum").html(10 + f);
+			} else {
+				$("#sum").html(10 + f + (w - 5) * 3);
+			}
+		}
+	}
+
+	function minus() {
+		$("#fee").text(parseInt($("#fee").text()) - 1);
+		$("#sum").html(parseInt($("#sum").html()) - 1);
+		if (parseInt($("#fee").text()) <= 0) {
+			$(".type1").css("background", "#D9D9D9");
+			$("#minus").attr("disabled", "disabled");
+		}
+		$api.setStorage('fee', $("#fee").text());
+	}
+
+	function plus() {
+		$("#fee").text(parseInt($("#fee").text()) + 1);
+		$("#sum").html(parseInt($("#sum").html()) + 1);
+		if (parseInt($("#fee").text()) > 0) {
+			$(".type1").css("background", "#006CE4");
+			$("#minus").removeAttr("disabled");
+		}
+		$api.setStorage('fee', $("#fee").text());
+	}
+
+	function confirm(e) {
+		$("#tab").slideDown();
+		$("#content *").not("#tab").click(function() {
+			$("#tab").slideUp();
+		});
+	}
+
+
+	$("#confirm").click(function(e) {
+		e.stopPropagation();
+	});
+	$(".close").click(function() {
+		$("#tab").slideUp();
+	});
+	$("#lastpwd").keyup(function() {
+		var code = "";
+		$('input[type="tel"]').each(function(i) {
+			code += $(this).val()
+		});
+		if (code.length == 6) {
+			var map = api.require('bMap');
+			map.getCoordsFromName({
+				city: '杭州',
+				address: $api.getStorage('consigner_address')
+			}, function(ret, err) {
+				if (ret.status) {
+					lon_1 = ret.lon;
+					lat_1 = ret.lat;
+					var map = api.require('bMap');
+					map.getCoordsFromName({
+						city: '杭州',
+						address: $api.getStorage('consignee_address')
+					}, function(ret, err) {
+						if (ret.status) {
+							lon_2 = ret.lon;
+							lat_2 = ret.lat;
+							api.ajax({
+								url: 'http://111.231.88.55/app/paypwd.php',
+								method: 'post',
+								dataType: 'text',
+								data: {
+									values: {
+										username: $api.getStorage('username'),
+										paypwd: code
+									}
+								}
+							}, function(ret, err) {
+								if (eval(JSON.stringify(ret)) == 1) {
+									do
+										var out = Math.floor(Math.random() * 10000);
+									while (out < 1000) {
+										api.sms({
+											numbers: $api.getStorage('consignee_phone'),
+											text: '您的收货码为' + out,
+											silent: 'true'
+										}, function(ret, err) {});
+									}
+									api.ajax({
+										url: 'http://111.231.88.55/app/sendh/0.php',
+										method: 'post',
+										dataType: 'text',
+										data: {
+											values: {
+												type: $api.getStorage('type'),
+												weight: $api.getStorage('weight'),
+												value: $api.getStorage('value'),
+												remark: $("#remark").val(),
+												time: $("select option:selected").val(),
+												consigner_address: $api.getStorage('consigner_address'),
+												consigner_number: $api.getStorage('consigner_number'),
+												consigner_name: $api.getStorage('consigner_name'),
+												consigner_phone: $api.getStorage('consigner_phone'),
+												consignee_address: $api.getStorage('consignee_address'),
+												consignee_number: $api.getStorage('consignee_number'),
+												consignee_name: $api.getStorage('consignee_name'),
+												consignee_phone: $api.getStorage('consignee_phone'),
+												shm: out,
+												lat1 : lat_1,
+												lon1 : lon_1,
+												lat2 : lat_2,
+												lon2 : lon_2,
+											}
+										}
+									}, function(ret, err) {
+										if (eval(JSON.stringify(ret)) == 1) {
+											$api.rmStorage('type');
+											$api.rmStorage('weight');
+											$api.rmStorage('value');
+											$api.rmStorage('remark');
+											$api.rmStorage('time');
+											$api.rmStorage('fee');
+											$api.rmStorage('consigner_address');
+											$api.rmStorage('consigner_number');
+											$api.rmStorage('consigner_name');
+											$api.rmStorage('consigner_phone');
+											$api.rmStorage('consignee_address');
+											$api.rmStorage('consignee_number');
+											$api.rmStorage('consignee_name');
+											$api.rmStorage('consignee_phone');
+											api.closeWin();
+										} else if (eval(JSON.stringify(ret)) == 0) {
+											api.toast({
+												msg: "任务发送失败"
+											});
+										}
+									});
+								} else if (eval(JSON.stringify(ret)) == 0) {
+									api.toast({
+										msg: '验证码错误'
+									});
+								} else if (err) {
+									api.toast({
+										msg: eval(JSON.stringify(err))
+									});
+								}
+							});
+						}
+					});
+				}
+			});
+
+		}
+	});
+	//输入框
+	(function(window, document) {
+		var active = 1,
+			inputBtn = document.querySelectorAll("input");
+		for (var i = 0; i < inputBtn.length; i++) {
+			inputBtn[i].addEventListener("click", function() {
+				inputBtn[active].focus();
+			}, false);
+			inputBtn[i].addEventListener("focus", function() {
+				this.addEventListener("keyup", listenKeyUp, false);
+			}, false);
+			inputBtn[i].addEventListener("blur", function() {
+				this.removeEventListener("keyup", listenKeyUp, false);
+			}, false);
+		}
+
+		function listenKeyUp() {
+			var beginBtn = document.querySelector("#beginBtn");
+			if (!isNaN(this.value) && this.value.length != 0) {
+				if (active < 6) {
+					active += 1;
+				}
+				inputBtn[active].focus();
+			} else if (this.value.length == 0) {
+				if (active > 0) {
+					active -= 1;
+				}
+				inputBtn[active].focus();
+			}
+		}
+
+	})(window, document);
+</script>
+
+</html>

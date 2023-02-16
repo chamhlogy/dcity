@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>发货方</title>
+	<link rel="stylesheet" type="text/css" href="../css/api.css" />
+	<style>
+		header {
+			width: 100%;
+			height: 50px;
+			color: #FFFFFF;
+			background-color: #006ce4;
+			font-size: 18px;
+		}
+
+		header a {
+			width: 16%;
+			height: 50px;
+			line-height: 50px;
+			display: block;
+			text-align: center;
+			float: right;
+		}
+
+		header a:active {
+			opacity: 0.5;
+		}
+
+		.back,
+		.title {
+			float: left;
+		}
+
+		.title {
+			width: 68%;
+			height: 50px;
+			line-height: 50px;
+			margin-right: 16%;
+			text-align: center;
+		}
+
+		.input-wrap {
+			padding: 10px 0;
+			display: -webkit-box;
+			border-bottom: 1px solid #D9D9D9;
+		}
+
+		.form {
+			margin: 30px 20px 0 20px;
+			padding: 0 10px;
+			line-height: 30px;
+		}
+
+		.input-wrap input {
+			height: 32px;
+			margin-left: 10px;
+			font-size: 18px;
+			color: #006ce4;
+			-webkit-box-flex: 1;
+			display: block;
+			outline: none;
+		}
+
+		#confirm {
+			margin-top: 40px;
+			width: 80%;
+			height: 50px;
+			margin-left: 10%;
+			border-radius: 25px;
+			background-color: #D9D9D9;
+			color: #FFFFFF;
+			font-size: 14px;
+			outline: none;
+		}
+
+		.icon {
+			width: 1em;
+			height: 1em;
+			vertical-align: -0.15em;
+			fill: currentColor;
+			overflow: hidden;
+		}
+
+		.close {
+			display: none;
+			fill: #D9D9D9;
+		}
+
+		#autoass {
+			position: absolute;
+			width: calc(100% - 60px);
+			background: #f8f8f8;
+			border: 1px solid #D9D9D9;
+			border-top: 0;
+			border-bottom: 0;
+			z-index: 99;
+			display: none;
+		}
+
+		#autoass li {
+			line-height: 40px;
+			padding: 0 10px;
+			border-bottom: 1px solid #D9D9D9;
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+		<a class="back" onclick="api.closeWin();">
+			<svg class="icon" aria-hidden="true">
+				<use xlink:href="#icon-back"></use>
+			</svg> </a>
+		<p class="title">
+			发货人信息
+		</p>
+	</header>
+	<div class="form" oninput="on_input(event)">
+		<div class="input-wrap">
+			<svg class="icon" aria-hidden="true">
+					<use xlink:href="#icon-global_light"></use>
+				</svg>
+			<span>地址：</span>
+			<input type="text" placeholder="发货人地址" id="consigner_address" autofocus oninput="OnInput(event)">
+			<svg id="unfold" class="icon close" aria-hidden="true">
+					<use xlink:href="#icon-unfold"></use>
+				</svg>
+		</div>
+		<ul id="autoass">
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+		<div class="input-wrap">
+			<svg class="icon" aria-hidden="true">
+					<use xlink:href="#icon-info"></use>
+				</svg>
+			<span>门牌：</span>
+			<input type="text" placeholder="发货人门牌号" id="consigner_number">
+		</div>
+		<div class="input-wrap">
+			<svg class="icon" aria-hidden="true">
+					<use xlink:href="#icon-profile"></use>
+				</svg>
+			<span>姓名：</span>
+			<input type="text" placeholder="发货人姓名" id="consigner_name">
+		</div>
+		<div class="input-wrap">
+			<svg class="icon" aria-hidden="true">
+					<use xlink:href="#icon-phone"></use>
+				</svg>
+			<span>联系方式：</span>
+			<input type="text" placeholder="发货人联系方式" id="consigner_phone" maxlength="11" oninput="this.value=this.value.replace(/[^\d]/g,'')">
+		</div>
+	</div>
+	<button id="confirm" onclick="confirm();" disabled>
+			确认信息
+		</button>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="../script/iconfont.js"></script>
+<script type="text/javascript">
+	var consigner_address = $api.getStorage('consigner_address');
+	var consigner_number = $api.getStorage('consigner_number');
+	var consigner_name = $api.getStorage('consigner_name');
+	var consigner_phone = $api.getStorage('consigner_phone');
+	apiready = function() {
+		var header = document.getElementsByTagName("header");
+		$api.fixStatusBar(header[0]);
+		info();
+	};
+	//自动联想
+	function OnInput(event) {
+		if ($("#consigner_address").val().length == 0) {
+			$("#autoass").slideUp("fast");
+			$(".close").hide();
+		} else {
+			$("#autoass").slideDown("fast");
+			$(".close").show();
+			var bMap = api.require('bMap');
+			bMap.getLocation({
+				accuracy: '100m',
+				autoStop: true,
+				filter: 1
+			}, function(ret, err) {
+				if (ret.status) {
+					var curcity = ret.city.replace("市", "");
+					$api.setStorage("curcity", curcity);
+
+				} else {
+					var curcity = "杭州";
+				}
+				$.ajax({
+					type: 'get',
+					url: 'http://api.map.baidu.com/place/v2/suggestion?query=' + $('#consigner_address').val() + '&region=curcity&city_limit=true&output=json&ak=R5CVMVkcMfkvw22A9NirjykqhK9sf8mo',
+					dataType: 'jsonp',
+					success: function(msg) {
+						$("li").each(function(i) {
+							$(this).html(msg.result[i].name);
+						});
+					}
+				});
+			});
+		}
+	}
+
+	$("#autoass li").click(function() {
+		$("#consigner_address").val($(this).html());
+		$("#autoass").slideUp("fast");
+		$(".close").hide();
+	});
+
+	$(".close").click(function() {
+		$("#autoass").slideUp("fast");
+		$(this).hide();
+	});
+
+	function confirm() {
+		$api.setStorage('consigner_address', $api.byId('consigner_address').value);
+		$api.setStorage('consigner_number', $api.byId('consigner_number').value);
+		$api.setStorage('consigner_name', $api.byId('consigner_name').value);
+		$api.setStorage('consigner_phone', $api.byId('consigner_phone').value);
+		api.execScript({
+			name: 'package_send',
+			script: 'window.location.reload();'
+		});
+		api.execScript({
+			name: 'package_deliver',
+			script: 'window.location.reload();'
+		});
+		api.execScript({
+			name: 'map_frame',
+			script: 'window.location.reload();'
+		});
+		api.closeWin();
+	}
+
+	function info() {
+		if (consigner_address != "undifined" && consigner_number != "undifined" && consigner_name != "undifined" && consigner_phone != "undifined") {
+			$("#consigner_address").val(consigner_address);
+			$("#consigner_number").val(consigner_number);
+			$("#consigner_name").val(consigner_name);
+			$("#consigner_phone").val(consigner_phone);
+		}
+	}
+
+	//按钮开关及颜色更改
+	function on_input(event) {
+		if ($api.byId("consigner_address").value != '' && $api.byId("consigner_number").value != '' && $api.byId("consigner_name").value != '' && $api.byId("consigner_phone").value.length == 11) {
+			$api.byId("confirm").style.backgroundColor = "#006ce4";
+			$api.byId("confirm").disabled = false;
+		} else {
+			$api.byId("confirm").style.backgroundColor = "#D9D9D9";
+			$api.byId("confirm").disabled = true;
+		}
+	}
+</script>
+
+</html>

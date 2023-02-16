@@ -1,0 +1,161 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>侧边栏</title>
+		<link rel="stylesheet" type="text/css" href="../css/api.css"/>
+		<style>
+			html, body {
+				background-color: #f8f8f8;
+			}
+			li {
+				line-height: 50px;
+				border-bottom: 1px solid #D9D9D9;
+			}
+			.liActive {
+				background-color: #D9D9D9;
+			}
+			.zone {
+				height: 150px;
+				background: -webkit-gradient(linear, 0% 0% , 0% 100%,from(#006CE4), to(#1986F3));
+			}
+			.borderdiv {
+				position: relative;
+				width: 80px;
+				height: 80px;
+				top: 28px;
+				margin: 0 auto;
+				border-radius: 50%;
+				-webkit-animation: lianyi 2s infinite;
+				border: 2px solid #f8f8f8;
+			}
+			.headimg {
+				width: 80px;
+				height: 80px;
+				background-image: url("../image/b.png");
+				background-position: center;
+				background-size: cover;
+				border-radius: 50%;
+			}
+			#userinfo {
+				position: absolute;
+				width: 100%;
+				top: 120px;
+				line-height: 16px;
+				font-size: 16px;
+				color: #FFFFFF;
+				text-align: center;
+			}
+			.icon {
+				width: 1em;
+				height: 1em;
+				padding: 0 10px;
+				vertical-align: -0.15em;
+				fill: #006CE4;
+				overflow: hidden;
+			}
+			span {
+				float: right;
+			}
+			span .icon {
+				fill: #D9D9D9;
+			}
+			.close {
+				position: absolute;
+				left: 5%;
+				top: 30px;
+				width: 30px;
+				height: 30px;
+				line-height: 30px;
+				text-align: center;
+				color: #FFFFFF;
+			}
+			.close .icon {
+				fill: #FFFFFF;
+			}
+			@keyframes lianyi{
+			100% {
+			padding: 5px;
+			top: 23px
+			}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="close" onclick="api.closeWin()">
+			<svg class="icon" aria-hidden="true">
+				<use xlink:href="#icon-close"></use>
+			</svg>
+		</div>
+		<ul>
+			<li class="zone" tapmode="liActive">
+				<div class="borderdiv">
+					<div class="headimg"></div>
+				</div>
+				<div id="userinfo">
+					用户名
+				</div>
+			</li>
+			<li tapmode="liActive" onclick="api.openWin({name:'identity',url:'identity.html'});">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#icon-profile_light"></use>
+				</svg><a>个人资料</a><span>
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#icon-right"></use>
+					</svg></span>
+			</li>
+			<li tapmode="liActive" onclick="api.openWin({name:'order',url:'order.html'});">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#icon-edit"></use>
+				</svg><a>我的订单</a><span>
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#icon-right"></use>
+					</svg></span>
+			</li>
+			<li tapmode="liActive" onclick="api.openWin({name:'wallet',url:'wallet.html'});">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#icon-moneybag"></use>
+				</svg><a>我的钱包</a><span>
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#icon-right"></use>
+					</svg></span>
+			</li>
+			<li tapmode="liActive" onclick="api.openWin({name:'preference',url:'preference.html'});">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#icon-like"></use>
+				</svg><a>接单偏好</a>
+				<span>
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#icon-right"></use>
+					</svg></span>
+			</li>
+			<li tapmode="liActive" onclick="api.openWin({name:'help',url:'help.html'});">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#icon-similar"></use>
+				</svg><a>帮助中心</a><span>
+					<svg class="icon right" aria-hidden="true">
+						<use xlink:href="#icon-right"></use>
+					</svg></span>
+			</li>
+			<li tapmode="liActive" onclick="api.openWin({name:'settings',url:'settings.html'});">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#icon-settings"></use>
+				</svg><a>系统设置</a><span>
+					<svg class="icon right" aria-hidden="true">
+						<use xlink:href="#icon-right"></use>
+					</svg></span>
+			</li>
+		</ul>
+	</body>
+	<script type="text/javascript" src="../script/api.js"></script>
+	<script type="text/javascript" src="../script/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="../script/iconfont.js"></script>
+	<script>
+		apiready = function() {
+			var header = document.getElementsByTagName("header");
+			$api.fixStatusBar(header[0]);
+		};
+	</script>
+</html>

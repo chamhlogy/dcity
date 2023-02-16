@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>身份认证</title>
+	<link rel="stylesheet" type="text/css" href="../css/api.css" />
+	<style>
+		header {
+			width: 100%;
+			height: 50px;
+			color: #FFFFFF;
+			background-color: #006CE4;
+			font-size: 18px;
+		}
+
+		header a {
+			width: 16%;
+			height: 50px;
+			line-height: 50px;
+			display: block;
+			text-align: center;
+			float: right;
+		}
+
+		header a:active {
+			opacity: 0.5;
+		}
+
+		.back,
+		.title {
+			float: left;
+		}
+
+		.title {
+			width: 68%;
+			height: 50px;
+			line-height: 50px;
+			margin-right: 16%;
+			text-align: center;
+		}
+
+		.icon {
+			width: 1em;
+			height: 1em;
+			vertical-align: -0.15em;
+			margin: 0 5px;
+			fill: currentColor;
+			overflow: hidden;
+		}
+
+		.input-wrap {
+			padding: 10px 0;
+			display: -webkit-box;
+			border-bottom: 1px solid #D9D9D9;
+		}
+
+		.form {
+			margin: 30px 20px 0 20px;
+			padding: 0 10px;
+			line-height: 30px;
+		}
+
+		.input-wrap input {
+			display: block;
+			-webkit-box-flex: 1;
+			outline: none;
+			height: 32px;
+			color: #006CE4;
+			font-size: 18px;
+		}
+
+		#confirm {
+			margin-top: 40px;
+			width: 80%;
+			height: 50px;
+			margin-left: 10%;
+			border-radius: 25px;
+			background-color: #D9D9D9;
+			color: #FFFFFF;
+			font-size: 14px;
+			outline: none;
+		}
+
+		.content {
+			display: flex;
+		}
+
+		.imgdiv {
+			width: 80px;
+			height: 80px;
+			line-height: 80px;
+			margin-left: 20px;
+			color: #D9D9D9;
+			border: 2px solid #D9D9D9;
+			background-position: center;
+			background-size: cover;
+			text-align: center;
+		}
+
+		.imgdiv svg {
+			color: #D9D9D9;
+			font-size: 2em;
+			vertical-align: -0.3em;
+		}
+
+		#choice {
+			margin-left: 10px;
+			height: 30px;
+			outline: none;
+		}
+
+		#tip {
+			margin: 10px 0;
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+		<a class="back" onclick="api.closeWin();">
+			<svg class="icon" aria-hidden="true">
+				<use xlink:href="#icon-back"></use>
+			</svg> </a>
+		<p class="title">
+			身份认证
+		</p>
+	</header>
+	<div class="form" oninput="on_input(event)">
+		<div class="input-wrap">
+			<svg class="icon" aria-hidden="true">
+					<use xlink:href="#icon-people"></use>
+				</svg>
+			<input type="text" placeholder="真实姓名" id="name" autofocus>
+		</div>
+		<div class="input-wrap">
+			<svg class="icon" aria-hidden="true">
+					<use xlink:href="#icon-profile"></use>
+				</svg>
+			<input type="text" placeholder="18位身份证号" id="idcard" maxlength="18" oninput="this.value=this.value.replace(/\D/g,'')">
+		</div>
+		<span id="tip">依次添加身份证正面、反面、营业执照图：</span>
+		<div class="content">
+			<div class="imgdiv" id="album1">
+				<svg class="icon" aria-hidden="true">
+						<use xlink:href="#icon-add"></use>
+					</svg>
+			</div>
+			<div class="imgdiv" id="album2">
+				<svg class="icon" aria-hidden="true">
+						<use xlink:href="#icon-add"></use>
+					</svg>
+			</div>
+			<div class="imgdiv" id="album3">
+				<svg class="icon" aria-hidden="true">
+						<use xlink:href="#icon-add"></use>
+					</svg>
+			</div>
+		</div>
+	</div>
+	<button id="confirm" onclick="confirm();" disabled>
+			提交
+		</button>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="../script/iconfont.js"></script>
+<script type="text/javascript">
+	apiready = function() {
+		var header = document.getElementsByTagName("header");
+		$api.fixStatusBar(header[0]);
+		$("#auth").text($api.getStorage('auth'));
+		$("#edituser").text($api.getStorage('username'));
+	};
+	$(".mask").click(function() {
+		$(".mask,.sexdiv").hide();
+	});
+	//打开摄像头
+	var img;
+
+	function openCamera() {
+		api.getPicture({
+			sourceType: 'camera',
+			encodingType: 'jpg',
+			mediaValue: 'pic',
+			destinationType: 'base64',
+			allowEdit: true,
+			quality: 100,
+			targetWidth: 300,
+			targetHeight: 300,
+			saveToPhotoAlbum: true
+		}, function(ret, err) {
+			if (ret) {
+				api.ajax({
+					url: 'http://111.231.88.55/app/upload.php',
+					method: 'post',
+					data: {
+						files: {
+							file: ret.data
+						}
+					}
+				}, function(ret, err) {
+					if (ret) {
+						api.alert({
+							msg: JSON.stringify(ret)
+						});
+					} else {
+						api.alert({
+							msg: JSON.stringify(err)
+						});
+					}
+				});
+			} else {
+				alert("打开摄像头失败");
+			}
+		});
+	}
+
+	//打开相册
+	$('#album1').click(function() {
+		api.getPicture({
+			sourceType: 'album',
+			encodingType: 'jpg',
+			mediaValue: 'pic',
+			destinationType: 'base64',
+			allowEdit: true,
+			quality: 100,
+			targetWidth: 300,
+			targetHeight: 300,
+			saveToPhotoAlbum: true
+		}, function(ret, err) {
+			if (ret) {
+				var z = ret;
+				api.ajax({
+					url: 'http://111.231.88.55/app/upload/3.php',
+					method: 'post',
+					dataType: 'text',
+					data: {
+						values: {
+							username: $api.getStorage('username')
+						},
+						files: {
+							file: z.data
+						}
+					}
+				}, function(ret, err) {
+					if (eval(JSON.stringify(ret)) == 1) {
+						api.toast({
+							msg: '身份证正面上传成功'
+						});
+					} else if (eval(JSON.stringify(ret)) == 0) {
+						api.toast({
+							msg: '身份证正面上传失败'
+						});
+					} else if (err) {
+						api.toast({
+							msg: '上传失败'
+						});
+					}
+				});
+			} else {
+				api.toast({
+					msg: '相册获取失败'
+				});
+			}
+		});
+	});
+
+
+	$('#album2').click(function() {
+		api.getPicture({
+			sourceType: 'album',
+			encodingType: 'jpg',
+			mediaValue: 'pic',
+			destinationType: 'base64',
+			allowEdit: true,
+			quality: 100,
+			targetWidth: 300,
+			targetHeight: 300,
+			saveToPhotoAlbum: true
+		}, function(ret, err) {
+			if (ret) {
+				var q = ret;
+				api.ajax({
+					url: 'http://111.231.88.55/app/upload/4.php',
+					method: 'post',
+					dataType: 'text',
+					data: {
+						values: {
+							username: $api.getStorage('username')
+						},
+						files: {
+							file: q.data
+						}
+					}
+				}, function(ret, err) {
+					if (eval(JSON.stringify(ret)) == 1) {
+						api.toast({
+							msg: '身份证背面上传成功'
+						});
+					} else if (eval(JSON.stringify(ret)) == 0) {
+						api.toast({
+							msg: '身份证背面上传失败'
+						});
+					} else if (err) {
+						api.toast({
+							msg: '上传失败'
+						});
+					}
+				});
+			} else {
+				api.toast({
+					msg: '相册获取失败'
+				});
+			}
+		});
+	});
+
+
+	$('#album3').click(function() {
+		api.getPicture({
+			sourceType: 'album',
+			encodingType: 'jpg',
+			mediaValue: 'pic',
+			destinationType: 'base64',
+			allowEdit: true,
+			quality: 100,
+			targetWidth: 300,
+			targetHeight: 300,
+			saveToPhotoAlbum: true
+		}, function(ret, err) {
+			if (ret) {
+				var m = ret;
+				api.ajax({
+					url: 'http://111.231.88.55/app/upload/5.php',
+					method: 'post',
+					dataType: 'text',
+					data: {
+						values: {
+							username: $api.getStorage('username')
+						},
+						files: {
+							file: m.data
+						}
+					}
+				}, function(ret, err) {
+					if (eval(JSON.stringify(ret)) == 1) {
+						api.toast({
+							msg: '营业执照上传成功'
+						});
+					} else if (eval(JSON.stringify(ret)) == 0) {
+						api.toast({
+							msg: '营业执照上传失败'
+						});
+					} else if (err) {
+						api.toast({
+							msg: '上传失败'
+						});
+					}
+				});
+			} else {
+				api.toast({
+					msg: '相册获取失败'
+				});
+			}
+		});
+	});
+
+
+	$(".sex").click(function() {
+		$(".sexdiv").slideDown("fast");
+		$(".mask").show();
+	});
+	$(".sexli").click(function() {
+		$(".sexdiv,.mask").hide();
+		$(".sex span").text($(this).find("label").text());
+	});
+	$(".imgdiv").click(function() {
+		$(".picdiv").slideDown("fast");
+		$(".mask").show();
+	});
+	$(".picdiv li").click(function() {
+		$(".picdiv,.mask").hide();
+	});
+
+	function newname() {
+		$("#edituser").text($api.getStorage('newname'));
+		$api.rmStorage('newname')
+	}
+
+	function confirm() {
+		api.ajax({
+			url : 'http://111.231.88.55/app/identity/0.php',
+			method : 'post',
+			dataType : 'text',
+			data : {
+				values : {
+					username : $api.getStorage('username'),
+					idnumber : $api.byId('idcard').value,
+					name : $api.byId('name').value
+				}
+			}
+		}, function(ret, err) {
+			if (eval(JSON.stringify(ret))==1) {
+				api.toast({
+					msg : '提交成功'
+				});
+				$api.rmStorage('username');
+				api.openWin({
+					name: 'index',
+					url: 'index.html'
+				});
+
+			}else if(eval(JSON.stringify(ret))==0) {
+				api.toast({
+					msg : '提交失败'
+				});
+			} else if (err) {
+				api.toast({
+					msg : eval(JSON.stringify(err))
+				});
+			}
+		});
+	}
+
+	//按钮开关及颜色更改
+	function on_input(event) {
+		if ($api.byId("name").value != '' && $api.byId("idcard").value != '') {
+			$api.byId("confirm").style.backgroundColor = "#006ce4";
+			$api.byId("confirm").disabled = false;
+		} else {
+			$api.byId("confirm").style.backgroundColor = "#D9D9D9";
+			$api.byId("confirm").disabled = true;
+		}
+	}
+</script>
+
+</html>

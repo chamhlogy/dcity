@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>验证</title>
+		<link rel="stylesheet" type="text/css" href="../css/api.css"/>
+		<style>
+			header {
+				width: 100%;
+				height: 50px;
+				color: #FFFFFF;
+				background-color: #006ce4;
+				font-size: 18px;
+			}
+			header a {
+				width: 16%;
+				height: 50px;
+				line-height: 50px;
+				display: block;
+				text-align: center;
+				float: right;
+			}
+			header a:active {
+				opacity: 0.5;
+			}
+			.back, .title {
+				float: left;
+			}
+			.title {
+				width: 68%;
+				height: 50px;
+				line-height: 50px;
+				margin-right: 16%;
+				text-align: center;
+			}
+			#tel {
+				margin-top: 30px;
+				text-align: center;
+			}
+			input[type="tel"] {
+				width: 40px;
+				height: 40px;
+				font-size: 28px;
+				line-height: 40px;
+				margin: 0 5px;
+				color: #006ce4;
+				text-align: center;
+				border: 1px solid #000000;
+				outline-color: #66aeff;
+			}
+			#request {
+				margin-top: 40px;
+				width: 80%;
+				height: 50px;
+				margin-left: 10%;
+				border-radius: 25px;
+				background-color: #D9D9D9;
+				color: #FFFFFF;
+				font-size: 14px;
+				outline: none;
+			}
+			.icon {
+				width: 1em;
+				height: 1em;
+				vertical-align: -0.15em;
+				fill: currentColor;
+				overflow: hidden;
+			}
+			#ins {
+				margin: 30px 0 0 20px;
+				font-size: 18px;
+				font-weight: 700;
+			}
+			#sec {
+				margin: 0 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<a class="back" onclick="api.closeWin();">
+			<svg class="icon" aria-hidden="true">
+				<use xlink:href="#icon-back"></use>
+			</svg> </a>
+			<p class="title">
+				注册
+			</p>
+		</header>
+		<p id="ins">
+			请输入短信验证码:
+		</p>
+		<div id="tel">
+			<input type="tel" maxlength="1" autofocus oninput="this.value=this.value.replace(/[^\d]/g,'')">
+			<input type="tel" maxlength="1" oninput="this.value=this.value.replace(/[^\d]/g,'')">
+			<input type="tel" maxlength="1" oninput="this.value=this.value.replace(/[^\d]/g,'')">
+			<input type="tel" maxlength="1" id="lastpwd" oninput="this.value=this.value.replace(/[^\d]/g,'')">
+		</div>
+		<button id="request" onclick="request();" disabled>
+			重新获取<span id="sec">60s</span>
+		</button>
+	</body>
+	<script type="text/javascript" src="../script/api.js"></script>
+	<script type="text/javascript" src="../script/iconfont.js"></script>
+	<script type="text/javascript" src="../script/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript">
+		apiready = function() {
+			var header = document.getElementsByTagName("header");
+			$api.fixStatusBar(header[0]);
+			time();
+		};
+		//校验验证码
+		$("#lastpwd").keyup(function() {
+			var code = "";
+			$('input[type="tel"]').each(function(i) {
+				code += $(this).val()
+			});
+			if (code.length == 4) {
+				api.toast({
+					msg : '注册成功'
+				});
+				api.ajax({
+					url : 'http://111.231.88.55/app/phone.php',
+					method : 'post',
+					dataType : 'text',
+					data : {
+						values : {
+							bussinessphone : api.pageParam.phone,
+							username : $api.getStorage('username')
+						}
+					}
+				}, function(ret, err) {
+					if (ret) {
+						// api.toast({
+						// 	msg : eval(JSON.stringify(ret))
+						// });
+						api.openWin({
+							name : 'choice',
+							url : 'choice.html'
+						});
+					}else if (err) {
+						api.alert({
+							msg : eval(JSON.stringify(err))
+						});
+					}
+				});
+
+			}
+		});
+		//倒计时
+		function time() {
+			var sec = 60;
+			var interval = setInterval(function() {
+				document.getElementById('sec').innerHTML = sec + 's';
+				sec = sec - 1;
+				if (sec < 0) {
+					clearInterval(interval);
+					$("#request").attr("disabled", false).css("background", "#006ce4");
+					$("#sec").hide();
+				}
+			}, 1000);
+		}
+
+		//重新发送
+		function request() {
+			api.showProgress({
+				title : '短信发送中',
+				text : '请稍后...'
+			});
+			var smsVerify = api.require('smsVerify');
+			smsVerify.register(function(ret, err) {
+				if (ret.status) {
+					smsVerify.sms({
+						phone : api.pageParam.phone,
+						country : "86"
+					}, function(ret, err) {
+						if (ret.status) {
+							api.toast({
+								msg : '短信发送成功'
+							});
+						} else {
+							api.toast({
+								msg : err.code + ' ' + err.msg
+							});
+						}
+					});
+				} else {
+					api.alert({
+						msg : err.code + ' 应用注册失败'
+					});
+				}
+			});
+			api.hideProgress();
+			$("#request").attr("disabled", true).css("background", "#D9D9D9");
+			$("#sec").show();
+			time();
+		}
+
+		//输入框
+		(function(window, document) {
+			var active = 0, inputBtn = document.querySelectorAll("input");
+			for (var i = 0; i < inputBtn.length; i++) {
+				inputBtn[i].addEventListener("click", function() {
+					inputBtn[active].focus();
+				}, false);
+				inputBtn[i].addEventListener("focus", function() {
+					this.addEventListener("keyup", listenKeyUp, false);
+				}, false);
+				inputBtn[i].addEventListener("blur", function() {
+					this.removeEventListener("keyup", listenKeyUp, false);
+				}, false);
+			}
+			function listenKeyUp() {
+				var beginBtn = document.querySelector("#beginBtn");
+				if (!isNaN(this.value) && this.value.length != 0) {
+					if (active < 3) {
+						active += 1;
+					}
+					inputBtn[active].focus();
+				} else if (this.value.length == 0) {
+					if (active > 0) {
+						active -= 1;
+					}
+					inputBtn[active].focus();
+				}
+			}
+
+		})(window, document);
+	</script>
+</html>

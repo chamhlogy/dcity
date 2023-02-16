@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>个人中心</title>
+		<link rel="stylesheet" type="text/css" href="../css/api.css"/>
+		<style>
+			.top {
+				position: relative;
+				height: 250px;
+				background: -webkit-gradient(linear, 0% 0% , 0% 100%,from(#006CE4), to(#1986F3));
+				border-bottom: 20px solid #f8f8f8;
+				text-align: center;
+				overflow: hidden;
+			}
+			.borderdiv {
+				position: relative;
+				width: 80px;
+				height: 80px;
+				top: 28px;
+				margin: 0 auto;
+				border-radius: 50%;
+				-webkit-animation: lianyi 2s infinite;
+				border: 2px solid #f8f8f8;
+			}
+			.headimg {
+				width: 80px;
+				height: 80px;
+				background-image: url("../image/b.png");
+				background-position: center;
+				background-size: cover;
+				border-radius: 50%;
+			}
+			#userinfo {
+				position: absolute;
+				width: 100%;
+				top: 120px;
+				line-height: 16px;
+				font-size: 16px;
+				color: #FFFFFF;
+				text-align: center;
+			}
+			.hu {
+				position: absolute;
+				left: -10%;
+				width: 120%;
+				height: 100px;
+				background-color: #FFFFFF;
+				bottom: 0;
+				border-radius: 50% 50% 0 0;
+				overflow: hidden;
+			}
+			.huul {
+				position: absolute;
+				width: 80%;
+				height: 70px;
+				left: 10%;
+				bottom: 5px;
+				background-color: #FFFFFF;
+				list-style: none;
+			}
+			.huli {
+				position: relative;
+				width: 25%;
+				float: left;
+			}
+			.lidiv {
+				width: 70px;
+				height: 70px;
+				margin: 0 auto;
+				border-radius: 50%;
+				display: block;
+			}
+			.lidiv:active {
+				background-color: #f8f8f8;
+			}
+			.imgdiv1 {
+				position: relative;
+				width: 40px;
+				height: 40px;
+				top: 3px;
+				margin: 0 auto;
+				color: #FFFFFF;
+				background-color: #006CE4;
+				line-height: 40px;
+				border-radius: 50%;
+				text-align: center;
+			}
+			.tag {
+				margin-top: 5px;
+				font-size: 14px;
+			}
+			@keyframes lianyi{
+			100% {
+			padding: 5px;
+			top: 23px
+			}
+			}
+			.icon {
+				width: 1em;
+				height: 1em;
+				vertical-align: -0.15em;
+				fill: currentColor;
+				overflow: hidden;
+			}
+			.right {
+				color: #797A7E;
+			}
+			.msg {
+				width: 100%;
+				height: 200px;
+			}
+			.msg_title {
+				height: 50px;
+				line-height: 50px;
+				padding: 0 5%;
+				font-size: 18px;
+				border-bottom: 1px solid #D9D9D9;
+			}
+			.close{
+			    position:absolute;
+			    left: 5%;
+			    top: 30px;
+			    width: 30px;
+			    height: 30px;
+			    line-height: 30px;
+			    text-align: center;
+			    color:#FFFFFF;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="top">
+			<div class="close" onclick="api.closeWin()">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#icon-close"></use>
+				</svg>
+			</div>
+			<div class="borderdiv">
+				<div class="headimg"></div>
+			</div>
+			<div id="userinfo">
+				用户名
+			</div>
+			<div class="hu">
+				<ul class="huul">
+					<li class="huli">
+						<div class="lidiv" onclick="api.openWin({name:'identity',url:'identity.html'});">
+							<div class="imgdiv1">
+								<svg class="icon deliver" aria-hidden="true">
+									<use xlink:href="#icon-profile_light"></use>
+								</svg>
+							</div>
+							<p class="tag">
+								资料
+							</p>
+						</div>
+					</li>
+					<li class="huli">
+						<div class="lidiv" onclick="api.openWin({name:'order',url:'order.html'});">
+							<div class="imgdiv1">
+								<svg class="icon deliver" aria-hidden="true">
+									<use xlink:href="#icon-edit"></use>
+								</svg>
+							</div>
+							<p class="tag">
+								订单
+							</p>
+						</div>
+					</li>
+					<li class="huli">
+						<div class="lidiv" onclick="api.openWin({name:'wallet',url:'wallet.html'});">
+							<div class="imgdiv1">
+								<svg class="icon deliver" aria-hidden="true">
+									<use xlink:href="#icon-moneybag"></use>
+								</svg>
+							</div>
+							<p class="tag">
+								钱包
+							</p>
+						</div>
+					</li>
+					<li class="huli">
+						<div class="lidiv" onclick="api.openWin({name:'settings',url:'settings.html'});">
+							<div class="imgdiv1">
+								<svg class="icon deliver" aria-hidden="true">
+									<use xlink:href="#icon-settings"></use>
+								</svg>
+							</div>
+							<p class="tag">
+								设置
+							</p>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="msg">
+			<div class="msg_title">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#icon-message"></use>
+				</svg>
+				<b>我的消息</b>
+				<svg class="icon right" aria-hidden="true">
+					<use xlink:href="#icon-unfold"></use>
+				</svg>
+			</div>
+			<div class="msg_main"></div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../script/api.js"></script>
+	<script type="text/javascript" src="../script/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="../script/iconfont.js"></script>
+	<script type="text/javascript">
+		apiready = function() {
+		   $("#userinfo").html($api.getStorage('username'));
+		};
+	</script>
+</html>

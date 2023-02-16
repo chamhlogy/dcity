@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>我的钱包</title>
+		<link rel="stylesheet" type="text/css" href="../css/api.css"/>
+		<style>
+			header {
+				width: 100%;
+				height: 50px;
+				color: #FFFFFF;
+				background-color: #006ce4;
+				font-size: 18px;
+			}
+			header a {
+				width: 16%;
+				height: 50px;
+				line-height: 50px;
+				display: block;
+				text-align: center;
+				float: right;
+			}
+			header a:active {
+				opacity: 0.5;
+			}
+			.back, .title {
+				float: left;
+			}
+			.title {
+				width: 68%;
+				height: 50px;
+				line-height: 50px;
+				margin-right: 16%;
+				text-align: center;
+			}
+			.icon {
+				width: 1em;
+				height: 1em;
+				vertical-align: -0.15em;
+				fill: currentColor;
+				overflow: hidden;
+			}
+			.i_operate {
+				width: 2em;
+				height: 2em;
+				fill: #006CE4;
+			}
+			li span {
+				float: right;
+				color: #D9D9D9;
+			}
+			#container_account {
+				width: 100%;
+				height: 200px;
+				background: -webkit-gradient(linear, 0% 0% , 0% 100%,from(#006CE4), to(#1986F3));
+			}
+			#msg {
+				position: relative;
+				top: 20px;
+				margin-left: 5%;
+				color: #FFFFFF;
+			}
+			#account {
+				position: relative;
+				top: 55px;
+				font-size: 48px;
+				color: #FFFFFF;
+				text-align: center;
+			}
+			#container_operate {
+				width: 100%;
+				height: 80px;
+				background: #f8f8f8;
+				display: flex;
+				text-align: center;
+			}
+			.operate:first-child {
+				border-right: 1px solid #D9D9D9;
+			}
+			.operate {
+				margin: 10px;
+				flex: 1;
+			}
+			.mainul {
+				width: 100%;
+				line-height: 50px;
+				list-style: none;
+			}
+			.mainul li {
+				padding: 0 5%;
+				border-bottom: 1px solid #D9D9D9;
+			}
+			.mainul li:active {
+				background-color: #f8f8f8;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<a class="back" onclick="api.closeWin();">
+			<svg class="icon" aria-hidden="true">
+				<use xlink:href="#icon-back"></use>
+			</svg> </a>
+			<p class="title">
+				我的钱包
+			</p>
+		</header>
+		<div id="container_account">
+			<p id="msg">
+				账户余额：
+			</p>
+			<p id="account">
+				<span>￥</span><span id="money">0.00</span>
+			</p>
+		</div>
+		<div id="container_operate">
+			<div class="operate" onclick="api.openWin({name:'deposit',url:'deposit.html'});">
+				<svg class="icon i_operate" aria-hidden="true">
+					<use xlink:href="#icon-pay"></use>
+				</svg>
+				<p>
+					充值
+				</p>
+			</div>
+			<div class="operate" onclick="api.openWin({name:'withdrawal',url:'withdrawal.html'});">
+				<svg class="icon i_operate" aria-hidden="true">
+					<use xlink:href="#icon-recharge"></use>
+				</svg>
+				<p>
+					提现
+				</p>
+			</div>
+		</div>
+		<ul class="mainul">
+			<li class="mainli" onclick="api.openWin({name:'trade',url:'trade.html'});">
+				交易明细 <span>
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#icon-right"></use>
+					</svg></span>
+			</li>
+			<li class="mainli" onclick="api.openWin({name:'ticket',url:'ticket.html'});">
+				我的卡券 <span>
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#icon-right"></use>
+					</svg></span>
+			</li>
+			<li class="mainli" onclick="api.openWin({name:'safety',url:'safety.html'});">
+				账户安全 <span>
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#icon-right"></use>
+					</svg></span>
+			</li>
+		</ul>
+	</body>
+	<script type="text/javascript" src="../script/api.js"></script>
+	<script type="text/javascript" src="../script/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="../script/iconfont.js"></script>
+	<script type="text/javascript">
+		apiready = function() {
+			var header = document.getElementsByTagName("header");
+			$api.fixStatusBar(header[0]);
+			api.ajax({
+				url : 'http://111.231.88.55/app/wallet.php',
+				method : 'post',
+				dataType : 'text',
+				data : {
+					values : {
+						bussinessusername : $api.getStorage('username')
+					}
+				}
+			}, function(ret, err) {
+				if (ret) {
+					$('#money').html(eval(JSON.stringify(ret)));
+				} else if (err) {
+					api.toast({
+						msg : eval(JSON.stringify(err))
+					});
+				}
+			});
+		};
+	</script>
+</html>

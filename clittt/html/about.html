@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>关于我们</title>
+		<link rel="stylesheet" type="text/css" href="../css/api.css"/>
+		<style>
+			header {
+				width: 100%;
+				height: 50px;
+				color: #FFFFFF;
+				background-color: #006CE4;
+				font-size: 18px;
+			}
+			header a {
+				width: 16%;
+				height: 50px;
+				line-height: 50px;
+				display: block;
+				text-align: center;
+				float: right;
+			}
+			header a:active {
+				opacity: 0.5;
+			}
+			.back, .title {
+				float: left;
+			}
+			.title {
+				width: 68%;
+				height: 50px;
+				line-height: 50px;
+				margin-right: 16%;
+				text-align: center;
+			}
+			.icon {
+				width: 1em;
+				height: 1em;
+				vertical-align: -0.15em;
+				margin: 0 5px;
+				fill: currentColor;
+				overflow: hidden;
+			}
+			.content {
+				margin: 30px 5% 0 5%;
+				line-height: 30px;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<a class="back" onclick="api.closeWin();">
+			<svg class="icon" aria-hidden="true">
+				<use xlink:href="#icon-back"></use>
+			</svg> </a>
+			<p class="title">
+				关于我们
+			</p>
+		</header>
+		<div class="content">
+          <p>浙江天搜科技股份有限公司，是一家专注于移动互联网领域技术研发、投资孵化及移商生态圈打造的创业、投资机构。</p>
+          <p>2005年，天搜率先跨入移动互联网领域，创立至今，天搜以专注的姿态致力于移动端技术研发与产品运营，同时通过技术、资金、运营、管理支持等多样化方式，帮助有潜力的创业者开创出具有市场价值和社会意义的产品。天搜积极探索大众创业的新模式，为创业梦想者搭建强大的创业平台，全面打造以“互联网+”为核心的移商生态圈，助力政府、企业、商家、个人拥抱移动互联网。</p>
+          <p>“以人为本，人皆为才”的人才观，让天搜拥有了极强的合聚力与向心力。以在业界极富盛名的创始人为首，天搜汇聚了一批年轻而富激情的移动互联网人才。天搜提供给员工的不仅是梦想腾飞的舞台，更是开启事业的新起点，天搜希望与员工共创、共赢、共享，“+”在一起就是无限可能！</p>
+		</div>
+	</body>
+	<script type="text/javascript" src="../script/api.js"></script>
+	<script type="text/javascript" src="../script/iconfont.js"></script>
+	<script type="text/javascript">
+		apiready = function() {
+			var header = document.getElementsByTagName("header");
+			$api.fixStatusBar(header[0]);
+		};
+	</script>
+</html>

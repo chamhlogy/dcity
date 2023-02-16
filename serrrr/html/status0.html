@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>订单详情</title>
+		<link rel="stylesheet" type="text/css" href="../css/api.css"/>
+		<style>
+			header {
+				width: 100%;
+				height: 50px;
+				color: #FFFFFF;
+				background-color: #006CE4;
+				font-size: 18px;
+			}
+			header a {
+				width: 16%;
+				height: 50px;
+				line-height: 50px;
+				display: block;
+				text-align: center;
+				float: right;
+			}
+			header a:active {
+				opacity: 0.5;
+			}
+			.back, .title {
+				float: left;
+			}
+			.title {
+				width: 68%;
+				height: 50px;
+				line-height: 50px;
+				margin-right: 16%;
+				text-align: center;
+			}
+			.icon {
+				width: 1em;
+				height: 1em;
+				vertical-align: -0.15em;
+				margin: 0 5px;
+				fill: currentColor;
+				overflow: hidden;
+			}
+			.content {
+				height: 200px;
+				line-height: 40px;
+				padding: 10px 5%;
+			}
+			#tel {
+				margin-top: 20px;
+				text-align: center;
+			}
+			input[type="tel"] {
+				width: 40px;
+				height: 40px;
+				font-size: 28px;
+				line-height: 40px;
+				margin: 0 5px;
+				color: #006ce4;
+				text-align: center;
+				border: 1px solid #000000;
+				outline-color: #66aeff;
+			}
+			#finish {
+				margin-top: 30px;
+				width: 80%;
+				height: 50px;
+				margin-left: 10%;
+				border-radius: 25px;
+				background-color: #006CE4;
+				color: #FFFFFF;
+				font-size: 14px;
+				outline: none;
+			}
+			#dial {
+				margin-left: 20px;
+				padding: 5px 10px;
+				border-radius: 25px;
+				background-color: #006CE4;
+				color: #FFFFFF;
+			}
+			#status_money {
+				color: red;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<a class="back" onclick="api.closeWin();">
+			<svg class="icon" aria-hidden="true">
+				<use xlink:href="#icon-back"></use>
+			</svg> </a>
+			<p class="title">
+				订单详情
+			</p>
+		</header>
+		<div class="content">
+			<p>
+				<span>订单号：</span><span id="status_num">#201803019999</span>
+			</p>
+			<p>
+				<span>起点：</span><span id="status_start">ABC</span>
+			</p>
+			<p>
+				<span>终点：</span><span id="status_finish">ABC</span>
+			</p>
+			<p>
+				<span>收货时间：</span><span id="status_time">不限</span>
+			</p>
+			<p>
+				<span>收货人手机号：</span><span id="status_phone">13123456789</span>
+				<button id="dial" onclick="dial();">
+					拨号
+				</button>
+			</p>
+			<p>
+				<span>备注：</span><span id="status_remark">ABC</span>
+			</p>
+			<p>
+				<span>订单赏金：</span><span id="status_money">38</span>元
+			</p>
+			<p>
+				请在交付货物时询问并填写收货码：
+			</p>
+			<div id="tel">
+				<input type="tel" maxlength="1" oninput="this.value=this.value.replace(/[^\d]/g,'')">
+				<input type="tel" maxlength="1" oninput="this.value=this.value.replace(/[^\d]/g,'')">
+				<input type="tel" maxlength="1" oninput="this.value=this.value.replace(/[^\d]/g,'')">
+				<input type="tel" maxlength="1" id="lastpwd" oninput="this.value=this.value.replace(/[^\d]/g,'')">
+			</div>
+			<button id="finish" onclick="finish()">
+				确认订单
+			</button>
+		</div>
+	</body>
+	<script type="text/javascript" src="../script/api.js"></script>
+	<script type="text/javascript" src="../script/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="../script/iconfont.js"></script>
+	<script type="text/javascript">
+		apiready = function() {
+			var header = document.getElementsByTagName("header");
+			$api.fixStatusBar(header[0]);
+		};
+		//拨号
+		function dial() {
+			api.call({
+				type : 'tel_prompt',
+				number : '10086'
+			});
+		}
+
+		function finish() {
+			api.toast({
+				msg : '订单完成'
+			});
+		}
+
+		//输入框
+		(function(window, document) {
+			var active = 0, inputBtn = document.querySelectorAll("input");
+			for (var i = 0; i < inputBtn.length; i++) {
+				inputBtn[i].addEventListener("click", function() {
+					inputBtn[active].focus();
+				}, false);
+				inputBtn[i].addEventListener("focus", function() {
+					this.addEventListener("keyup", listenKeyUp, false);
+				}, false);
+				inputBtn[i].addEventListener("blur", function() {
+					this.removeEventListener("keyup", listenKeyUp, false);
+				}, false);
+			}
+			function listenKeyUp() {
+				var beginBtn = document.querySelector("#beginBtn");
+				if (!isNaN(this.value) && this.value.length != 0) {
+					if (active < 3) {
+						active += 1;
+					}
+					inputBtn[active].focus();
+				} else if (this.value.length == 0) {
+					if (active > 0) {
+						active -= 1;
+					}
+					inputBtn[active].focus();
+				}
+			}
+
+		})(window, document);
+	</script>
+</html>

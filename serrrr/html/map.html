@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>查看地图</title>
+		<link rel="stylesheet" type="text/css" href="../css/api.css"/>
+		<style>
+			header {
+				width: 100%;
+				height: 50px;
+				color: #FFFFFF;
+				background-color: #006CE4;
+				font-size: 18px;
+			}
+			header a {
+				width: 16%;
+				height: 50px;
+				line-height: 50px;
+				display: block;
+				text-align: center;
+				float: right;
+			}
+			header a:active {
+				opacity: 0.5;
+			}
+			.back, .title {
+				float: left;
+			}
+			.title {
+				width: 68%;
+				height: 50px;
+				line-height: 50px;
+				margin-right: 16%;
+				text-align: center;
+			}
+			.icon {
+				width: 1em;
+				height: 1em;
+				vertical-align: -0.15em;
+				fill: currentColor;
+				overflow: hidden;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<a class="back" onclick="api.closeWin();">
+			<svg class="icon" aria-hidden="true">
+				<use xlink:href="#icon-back"></use>
+			</svg> </a>
+			<p class="title">
+				查看地图
+			</p>
+		</header>
+	</body>
+	<script type="text/javascript" src="../script/api.js"></script>
+	<script type="text/javascript" src="../script/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="../script/iconfont.js"></script>
+	<script>
+		apiready = function() {
+			var header = document.getElementsByTagName("header");
+			$api.fixStatusBar(header[0]);
+			open_map();
+		}
+		function open_map() {
+			var address_1 = api.pageParam.address_1;
+			var address_2 = api.pageParam.address_2;
+			var lon_1, lon_2, lat_1, lat_2;
+			var map = api.require('bMap');
+			//定位
+			map.getLocation({
+				accuracy : '100m',
+				autoStop : true,
+				filter : 1
+			}, function(ret, err) {
+				if (ret.status) {
+					map.open({
+						rect : {
+							x : 0,
+							y : 75,
+							h : api.winHeight - 75
+						},
+						zoomLevel : 18,
+						showUserLocation : false,
+						fixedOn : api.frameName,
+						fixed : true
+					}, function(ret) {
+						//比例尺
+						map.setScaleBar({
+							show : true,
+							position : {
+								x : 50,
+								y : api.winHeight - 18
+							}
+						});
+						//指南针
+						map.setCompass({
+							position : {
+								x : 25,
+								y : 25
+							}
+						});
+						//3D建筑
+						map.setBuilding({
+							building : true
+						});
+						//获取当前城市
+						map.getNameFromCoords({
+							lon : ret.lon,
+							lat : ret.lat
+						}, function(ret, err) {
+							if (ret.status) {
+								$api.setStorage("curcity", ret.city.replace("市", ""));
+								//起点
+								map.getCoordsFromName({
+									city : $api.getStorage("curcity"),
+									address : address_1
+								}, function(ret, err) {
+									if (ret.status) {
+										lon_1 = ret.lon;
+										lat_1 = ret.lat;
+										//终点
+										map.getCoordsFromName({
+											city : $api.getStorage("curcity"),
+											address : address_2
+										}, function(ret, err) {
+											if (ret.status) {
+												lon_2 = ret.lon;
+												lat_2 = ret.lat;
+												//规划路线
+												map.searchRoute({
+													id : 0,
+													type : 'drive',
+													policy : 'ecar_dis_first',
+													start : {
+														lon : lon_1,
+														lat : lat_1
+													},
+													end : {
+														lon : lon_2,
+														lat : lat_2
+													}
+												}, function(ret, err) {
+													if (ret.status) {
+														map.drawRoute({
+															id : 0,
+															autoresizing : true,
+															index : 0
+														}, function(ret) {
+														});
+													} else {
+														api.alert({
+															msg : JSON.stringify(err)
+														});
+													}
+												});
+											} else {
+												api.alert({
+													msg : "未找到" + address_2
+												});
+											}
+										});
+									} else {
+										api.alert({
+											msg : "未找到" + address_1
+										});
+									}
+								});
+							} else {
+								api.alert({
+									msg : "定位失败"
+								});
+							}
+						});
+					});
+				}
+			});
+		}
+	</script>
+</html>
