@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>送件</title>
+		<link rel="stylesheet" type="text/css" href="../css/api.css"/>
+		<style>
+			.icon {
+				width: 1em;
+				height: 1em;
+				vertical-align: -0.15em;
+				fill: #006CE4;
+				padding-right: 5px;
+				overflow: hidden;
+			}
+			ul {
+				width: 90%;
+				margin: 20px auto;
+			}
+			li {
+				padding: 5px 5% 0 5%;
+				margin: 20px 0;
+				border: 1px solid #006CE4;
+				border-radius: 10px;
+				box-shadow: 2px 2px 5px #cce4ff;
+			}
+			p {
+				padding: 5px 0;
+			}
+			.palce {
+				margin-left: calc(1em + 10px);
+				color: #004899;
+			}
+			.text {
+				margin-left: 30px;
+			}
+			.btnnav {
+				line-height: 30px;
+				margin: 5px 0;
+			}
+			button {
+				width: 40%;
+				padding: 8px 0;
+				margin: 0 5%;
+				background: #006CE4;
+				color: #FFFFFF;
+				border-radius: 5px;
+			}
+		</style>
+	</head>
+	<body>
+		<ul id="task"></ul>
+	</body>
+	<script id="template" type="text/template">
+		{{for(var i=0; i < it.length; i++) { }}
+		<li >
+		<p class="num">
+		单号： {{= it[i].id}}
+		</p>
+		<p>
+		<svg class="icon" aria-hidden="true">
+		<use xlink:href="#icon-send"></use>
+		</svg>
+		送出点:
+		</p>
+		<p class="palce">
+		{{= it[i].address1}}
+		</p>
+		<p>
+		<svg class="icon" aria-hidden="true">
+		<use xlink:href="#icon-deliver"></use>
+		</svg>
+		送至点：
+		</p>
+		<p class="palce">
+		{{= it[i].address2}}
+		</p>
+		<p>
+		重量：<span>{{= it[i].kg}}</span>kg<span class="text">配送时间：</span><span class="time">{{= it[i].setting_arrive_time}}</span>
+		</p>
+		<p class="btnnav">
+		<button onclick="openmap('{{= it[i].address1}}','{{= it[i].address2}}');">打开地图</button>
+		</p>
+		</li>
+		{{ } }}
+	</script>
+	<script type="text/javascript" src="../script/api.js"></script>
+	<script type="text/javascript" src="../script/doT.min.js"></script>
+	<script type="text/javascript" src="../script/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="../script/iconfont.js"></script>
+	<script type="text/javascript">
+		var i;
+		var x;
+		var headlist, dot;
+		var dataLoading = false, isEmpty = false, skip = 0, LIMIT = 5, progress = true, isPull = true;
+		var typeNum;
+		apiready = function() {
+			fnInitPull();
+			fninit();
+			headList(progress, isPull);
+			fnInitPushRefresh();
+		};
+		function openmap(address1,address2) {
+			api.openWin({
+				name : 'map',
+				url : 'map.html',
+				pageParam: {
+					address_1: address1,
+					address_2: address2
+				}
+			});
+		}
+
+		// doT
+		function fninit() {
+			headlist = $api.byId('task');
+			dot = doT.template(template.innerHTML);
+		}
+
+		// 获取信息
+		var page = new Array();
+		page[0] = 1;
+		function headList(progress, isPull) {
+			if (dataLoading) {
+				return;
+			}
+			dataLoading = true;
+			if (isPull) {
+				skip = 0;
+				isEmpty = false;
+			}
+			if (isEmpty) {
+				api.toast({
+					msg : '没有更多了',
+					duration : 2000,
+					location : 'bottom'
+				});
+				dataLoading = false;
+				return;
+			}
+			if (progress) {
+				api.showProgress({
+					title : '加载中',
+					modal : false
+				});
+			}
+			api.showProgress();
+			//显示加载进度框
+			api.ajax({
+				url : 'http://111.231.88.55/app/goodsstate/bussiness1.php',
+				method : 'get',
+				cache : 'false',
+				timeout : 30,
+				dataTpye : 'json',
+				data : {
+					values : {
+						page : page[0],
+						username : $api.getStorage('username')
+					}
+				}
+			}, function(ret, err) {
+				api.hideProgress();
+				api.refreshHeaderLoadDone();
+				dataLoading = false;
+				page[0]++;
+				if (!ret) {
+					api.toast({
+						msg : '网络不给力',
+						duration : 2000,
+						location : 'bottom'
+					});
+					return;
+				}
+				skip += LIMIT;
+				if (ret.length < LIMIT) {
+					isEmpty = true;
+				}
+				if (ret.length == 0) {
+					return;
+				}
+				if (isPull) {
+					headlist.innerHTML = dot(ret);
+				} else {
+					headlist.innerHTML += dot(ret);
+				}
+			});
+		}
+
+		// 下拉加载更多
+		function fnInitPushRefresh() {
+			api.addEventListener({
+				name : 'scrolltobottom',
+				extra : {
+					threshold : 200
+				}
+			}, function(ret, err) {
+				headList(progress, false);
+			});
+		}
+
+		//下拉刷新
+		function fnInitPull() {
+			api.setRefreshHeaderInfo({
+				visible : true,
+				loadingImg : 'widget://image/refresh.png',
+				bgColor : '#ccc',
+				textColor : '#fff',
+				textDown : '下拉刷新...',
+				textUp : '松开刷新...'
+			}, function(ret, err) {
+				api.refreshHeaderLoadDone();
+				page[0] = 1;
+				headList(progress, true);
+			});
+		}
+	</script>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>title</title>
+		<link rel="stylesheet" type="text/css" href="../css/api.css"/>
+		<style>
+			html {
+				background: #f8f8f8;
+			}
+			header {
+				width: 100%;
+				height: 50px;
+				line-height: 50px;
+				color: #FFFFFF;
+				background-color: #006ce4;
+				font-size: 18px;
+				text-align: center;
+			}
+			#content {
+				position: absolute;
+				width: 100%;
+				top: 30%;
+				display: -webkit-box;
+			}
+			.option {
+				width: 50%;
+				height: 200px;
+				text-align: center;
+			}
+			.option_icon {
+				width: 100px;
+				height: 100px;
+				line-height: 100px;
+				margin: 0 auto;
+				border: 1px solid #006CE4;
+				border-radius: 50%;
+				background: #FFFFFF;
+			}
+			.option_word {
+				margin-top: 10px;
+			}
+			#ins {
+				position: absolute;
+				margin: 30px 0 0 20px;
+				font-size: 18px;
+				font-weight: 700;
+			}
+			.icon {
+				width: 1em;
+				height: 1em;
+				vertical-align: -0.3em;
+				fill: #006CE4;
+				font-size: 2em;
+				overflow: hidden;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			欢迎
+		</header>
+		<p id="ins">
+			请选择您的用户类型:
+		</p>
+		<div id="content">
+			<div class="option">
+				<div class="option_icon" id="option1">
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#icon-emoji"></use>
+					</svg>
+				</div>
+				<p class="option_word">
+					个人
+				</p>
+			</div>
+			<div class="option">
+				<div class="option_icon" id="option2">
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#icon-shopfill"></use>
+					</svg>
+				</div>
+				<p class="option_word">
+					商家
+				</p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../script/api.js"></script>
+	<script type="text/javascript" src="../script/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="../script/iconfont.js"></script>
+	<script type="text/javascript">
+		apiready = function() {
+			var header = document.getElementsByTagName("header");
+			$api.fixStatusBar(header[0]);
+		};
+		$("#option1").click(function() {
+			api.ajax({
+				url : 'http://111.231.88.55/app/choice/1.php',
+				method : 'post',
+				dataType : 'text',
+				data : {
+					values : {
+						username : $api.getStorage('username')
+					}
+				}
+			}, function(ret, err) {
+				if (eval(JSON.stringify(ret))==1) {
+					$api.setStorage('auth', $(this).next().html());
+						api.openWin({
+							name : 'auth1',
+							url : 'auth1.html'
+						});
+				}else if (eval(JSON.stringify(ret))==0) {
+					api.toast({
+						msg : '设定失败'
+					});
+				} else if (err) {
+					api.toast({
+						msg : eval(JSON.stringify(err))
+					});
+				}
+			});
+		});
+		$("#option2").click(function() {
+			api.ajax({
+				url : 'http://111.231.88.55/app/choice/2.php',
+				method : 'post',
+				dataType : 'text',
+				data : {
+					values : {
+						username : $api.getStorage('username')
+					}
+				}
+			}, function(ret, err) {
+				if (eval(JSON.stringify(ret))==1) {
+					$api.setStorage('auth', $(this).next().html());
+						api.openWin({
+							name : 'auth',
+							url : 'auth.html'
+						});
+				}else if (eval(JSON.stringify(ret))==0) {
+					api.toast({
+						msg : '设定失败'
+					});
+				}  else if (err) {
+					api.toast({
+						msg : eval(JSON.stringify(err))
+					});
+				}
+			});
+		});
+	</script>
+</html>

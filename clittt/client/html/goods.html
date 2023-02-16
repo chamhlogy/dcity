@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>货物信息</title>
+		<link rel="stylesheet" type="text/css" href="../css/api.css"/>
+		<style>
+			header {
+				width: 100%;
+				height: 50px;
+				color: #FFFFFF;
+				background-color: #006ce4;
+				font-size: 18px;
+			}
+			header a {
+				width: 16%;
+				height: 50px;
+				line-height: 50px;
+				display: block;
+				text-align: center;
+				float: right;
+			}
+			header a:active {
+				opacity: 0.5;
+			}
+			.back, .title {
+				float: left;
+			}
+			.title {
+				width: 68%;
+				height: 50px;
+				line-height: 50px;
+				margin-right: 16%;
+				text-align: center;
+			}
+			.icon {
+				width: 1em;
+				height: 1em;
+				vertical-align: -0.75em;
+				fill: #FFFFFF;
+				overflow: hidden;
+				padding: 10px;
+				margin-top: 10px;
+				border-radius: 5px;
+			}
+			.type1 {
+				background: #D9D9D9;
+			}
+			.type2 {
+				background: #006CE4;
+			}
+			#content {
+				padding: 0 5%;
+				margin-top: 20px;
+			}
+			.item {
+				margin-top: 20px;
+				font-weight: 700;
+			}
+			.row {
+				display: flex;
+				text-align: center;
+			}
+			input[type="radio"] {
+				display: none;
+			}
+			label {
+				height: 40px;
+				line-height: 40px;
+				margin: 10px;
+				background-color: #D9D9D9;
+				border-radius: 5px;
+				flex: 1;
+			}
+			input[type="radio"]:checked + label {
+				color: #FFFFFF;
+				background-color: #006CE4;
+			}
+			#container_weight {
+				padding: 5px;
+			}
+			.weight {
+				line-height: 36px;
+				margin: 0 5px;
+				display: inline;
+			}
+			#confirm {
+				margin-top: 40px;
+				width: 80%;
+				height: 50px;
+				margin-left: 10%;
+				border-radius: 25px;
+				background-color: #006CE4;
+				color: #FFFFFF;
+				font-size: 14px;
+				outline: none;
+			}
+			button {
+				outline: none;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<a class="back" onclick="api.closeWin();">
+			<svg class="icon" aria-hidden="true">
+				<use xlink:href="#icon-back"></use>
+			</svg> </a>
+			<p class="title">
+				货物订单
+			</p>
+		</header>
+		<div id="content">
+			<p class="item">
+				类型：
+			</p>
+			<div>
+				<div class="row">
+					<input type="radio" id="a1" name="type" value="文件">
+					<label for="a1">文件</label>
+					<input type="radio" id="a2" name="type" value="食品">
+					<label for="a2">食品</label>
+					<input type="radio" id="a3" name="type" value="生鲜">
+					<label for="a3">生鲜</label>
+				</div>
+				<div class="row">
+					<input type="radio" id="a4" name="type" value="家具">
+					<label for="a4">家具</label>
+					<input type="radio" id="a5" name="type" value="百货">
+					<label for="a5">百货</label>
+					<input type="radio" id="a6" name="type" value="其它" checked>
+					<label for="a6">其它</label>
+				</div>
+			</div>
+			<p class="item">
+				重量：
+			</p>
+			<div id="container_weight">
+				<button id="minus" onclick="minus();" disabled>
+					<svg class="icon type1" aria-hidden="true">
+						<use xlink:href="#icon-move"></use>
+					</svg>
+				</button>
+				<p class="weight">
+					<span id="weight">1</span>kg
+				</p>
+				<button onclick="plus();">
+					<svg class="icon type2" aria-hidden="true">
+						<use xlink:href="#icon-add"></use>
+					</svg>
+				</button>
+			</div>
+			<p class="item">
+				价值：
+			</p>
+			<div>
+				<div class="row">
+					<input type="radio" id="c1" name="value" value="100元以下" checked>
+					<label for="c1">100元以下</label>
+					<input type="radio" id="c2" name="value" value="100~500元">
+					<label for="c2">100~500元</label>
+					<input type="radio" id="c3" name="value" value="500~1千元">
+					<label for="c3">500~1千元</label>
+				</div>
+				<div class="row">
+					<input type="radio" id="c4" name="value" value="1千~5千元">
+					<label for="c4">1千~5千元</label>
+					<input type="radio" id="c5" name="value" value="5千~1万元">
+					<label for="c5">5千~1万元</label>
+					<input type="radio" id="c6" name="value" value="1万元以上">
+					<label for="c6">1万元以上</label>
+				</div>
+			</div>
+		</div>
+		<button id="confirm" onclick="confirm();">
+			确认
+		</button>
+	</body>
+	<script type="text/javascript" src="../script/api.js"></script>
+	<script type="text/javascript" src="../script/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="../script/iconfont.js"></script>
+	<script type="text/javascript">
+		var type = $api.getStorage('type');
+		var weight = $api.getStorage('weight');
+		var value = $api.getStorage('value');
+		apiready = function() {
+			var header = document.getElementsByTagName("header");
+			$api.fixStatusBar(header[0]);
+			info();
+		};
+		function info() {
+			if (type != "undifined" && weight != "undifined" && value != "undifined") {
+				$("input[name='type'][value='"+type+"']").attr("checked",true);
+				$("#weight").text(weight);
+				$("input[name='value'][value='"+value+"']").attr("checked",true);
+			}
+		}
+
+		function minus() {
+			$("#weight").text(parseInt($("#weight").text()) - 1);
+			if (parseInt($("#weight").text()) <= 1) {
+				$(".type1").css("background", "#D9D9D9");
+				$("#minus").attr("disabled", "disabled");
+			}
+		}
+
+		function plus() {
+			$("#weight").text(parseInt($("#weight").text()) + 1);
+			if (parseInt($("#weight").text()) > 1) {
+				$(".type1").css("background", "#006CE4");
+				$("#minus").removeAttr("disabled");
+			}
+		}
+
+		function confirm() {
+			$api.setStorage('type', $("input[name='type']:checked+label").text());
+			$api.setStorage('weight', $("#weight").text());
+			$api.setStorage('value', $("input[name='value']:checked+label").text());
+			api.closeWin();
+			api.execScript({
+				name : 'package_send',
+				script : 'window.location.reload();'
+			});
+			api.execScript({
+				name : 'package_deliver',
+				script : 'window.location.reload();'
+			});
+		}
+	</script>
+</html>

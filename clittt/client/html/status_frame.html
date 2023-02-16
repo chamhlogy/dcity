@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>配送地图</title>
+		<link rel="stylesheet" type="text/css" href="../css/api.css"/>
+	</head>
+	<body></body>
+	<script type="text/javascript" src="../script/api.js"></script>
+	<script type="text/javascript">
+		apiready = function() {
+			var map = api.require('bMap');
+			map.open({
+				rect : {
+					x : 0,
+					y : 0,
+					h : 250
+				},
+				zoomLevel : 18,
+				showUserLocation : true,
+				fixedOn : api.frameName,
+				fixed : true
+			}, function(ret) {
+				//比例尺
+				map.setScaleBar({
+					show : true,
+					position : {
+						x : 50,
+						y : api.winHeight - 18
+					}
+				});
+				//指南针
+				map.setCompass({
+					position : {
+						x : 25,
+						y : 25
+					}
+				});
+				//定位
+				map.getLocation({
+					accuracy : '100m',
+					autoStop : true,
+					filter : 1
+				}, function(ret, err) {
+					if (ret.status) {
+						//显示中心点
+						map.setCenter({
+							coords : {
+								lon : ret.lon,
+								lat : ret.lat
+							},
+							animation : true
+						});
+					} else {
+						alert(err.code);
+					}
+				});
+			});
+		};
+	</script>
+</html>

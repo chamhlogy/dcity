@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>发布端</title>
+		<link rel="stylesheet" type="text/css" href="../css/api.css"/>
+		<style>
+		</style>
+	</head>
+	<body></body>
+	<script type="text/javascript" src="../script/api.js"></script>
+	<script type="text/javascript" src="../script/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript">
+		apiready = function() {
+			open_map();
+			api.openFrame({
+				name : 'map_frame',
+				url : 'map_frame.html',
+				rect : {
+					x : 0,
+					y : 400,
+					w : 'auto',
+					h : 'auto'
+				},
+				bgColor : 'rgba(51,51,51,0)'
+			});
+			//点击两次返回则退出软件
+			var closeAPP = {
+				count : 0,
+				timer : null,
+				time : 1500
+			}
+			api.addEventListener({
+				name : 'keyback'
+			}, function(ret, err) {
+				closeAPP.count++;
+				if (closeAPP.count >= 2) {
+					api.closeWidget();
+				} else {
+					api.toast({
+						msg : '再按一次退出应用',
+						duration : closeAPP.time
+					});
+				}
+				clearTimeout(closeAPP.timer);
+				closeAPP.timer = setTimeout(function() {
+					closeAPP.count = 0;
+				}, closeAPP.time);
+			});
+		}
+		function open_map() {
+			var map = api.require('bMap');
+			map.open({
+				rect : {
+					x : 0,
+					y : 0,
+					h : api.winHeight
+				},
+				zoomLevel : 18,
+				showUserLocation : true,
+				fixedOn : api.frameName,
+				fixed : true
+			}, function(ret) {
+				//比例尺
+				map.setScaleBar({
+					show : true,
+					position : {
+						x : 50,
+						y : api.winHeight - 18
+					}
+				});
+			});
+			map.showUserLocation({
+				isShow : true,
+				trackingMode : 'none'
+			});
+			map.getLocation({
+				accuracy : '10m',
+				autoStop : true,
+				filter : 1
+			}, function(ret, err) {
+				if (ret.status) {
+					map.getNameFromCoords({
+						lon : ret.lon,
+						lat : ret.lat
+					}, function(ret, err) {
+						if (ret.status) {
+						}
+					});
+				}
+			});
+		}
+	</script>
+</html>

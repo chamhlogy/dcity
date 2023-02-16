@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>充值</title>
+		<link rel="stylesheet" type="text/css" href="../css/api.css"/>
+		<style>
+			header {
+				width: 100%;
+				height: 50px;
+				color: #FFFFFF;
+				background-color: #006CE4;
+				font-size: 18px;
+			}
+			header a {
+				width: 16%;
+				height: 50px;
+				line-height: 50px;
+				display: block;
+				text-align: center;
+				float: right;
+			}
+			header a:active {
+				opacity: 0.5;
+			}
+			.back, .title {
+				float: left;
+			}
+			.title {
+				width: 68%;
+				height: 50px;
+				line-height: 50px;
+				margin-right: 16%;
+				text-align: center;
+			}
+			.icon {
+				width: 1em;
+				height: 1em;
+				vertical-align: -0.15em;
+				fill: currentColor;
+				overflow: hidden;
+			}
+			.content {
+				padding: 30px 5%;
+			}
+			input[type=text] {
+				width: 40%;
+				line-height: 30px;
+				margin-left: 20px;
+				border: 1px solid #D9D9D9;
+				text-align: right;
+			}
+			#confirm {
+				margin-top: 40px;
+				width: 80%;
+				height: 50px;
+				margin-left: 10%;
+				border-radius: 25px;
+				background-color: #D9D9D9;
+				color: #FFFFFF;
+				font-size: 14px;
+				outline: none;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<a class="back" onclick="api.closeWin();">
+			<svg class="icon" aria-hidden="true">
+				<use xlink:href="#icon-back"></use>
+			</svg> </a>
+			<p class="title">
+				充值到余额
+			</p>
+		</header>
+		<div class="content" oninput="on_input(event)">
+			<span>请输入充值金额：</span>
+			<input type="text" id="money" oninput="this.value=value.replace(/[^\w\/]/ig,'')">
+			元
+			<button id="confirm" onclick="plus()">确认</button>
+		</div>
+	</body>
+	<script type="text/javascript" src="../script/api.js"></script>
+	<script type="text/javascript" src="../script/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="../script/iconfont.js"></script>
+	<script>
+		apiready = function() {
+			var header = document.getElementsByTagName("header");
+			$api.fixStatusBar(header[0]);
+		}
+		//按钮开关及颜色更改
+		function on_input(event) {
+			if ($api.byId("money").value != "") {
+				$api.byId("confirm").style.backgroundColor = "#006CE4";
+				$api.byId("confirm").disabled = false;
+			} else {
+				$api.byId("confirm").style.backgroundColor = "#D9D9D9";
+				$api.byId("confirm").disabled = true;
+			}
+		}
+		function plus(){
+			api.ajax({
+				url : 'http://111.231.88.55/app/wallet.php',
+				method : 'post',
+				dataType : 'json',
+				data : {
+					values : {
+						bussinessusername:$api.getStorage('username'),
+						bussinessplus: $api.byId('money').value
+						// $api.byId("username").value
+					}
+				}
+			}, function(ret, err) {
+				if (ret) {
+					api.alert({
+						msg : ret
+					});
+				} else {
+					api.alert({
+						msg : "错误"
+					});
+				}
+			});
+		}
+	</script>
+</html>
